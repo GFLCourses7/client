@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandler {
 
     private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
+
     @Override
     public void addScenario(Scenario scenario) {
         queue.add(scenario);

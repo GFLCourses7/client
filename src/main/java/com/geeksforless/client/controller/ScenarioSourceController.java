@@ -2,35 +2,29 @@ package com.geeksforless.client.controller;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.Scenario;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @RestController
 @RequestMapping("/api/scenario")
 public class ScenarioSourceController {
+    private static final Logger logger = LogManager.getLogger(ScenarioSourceController.class);
+    private final ScenarioSourceQueueHandler sourceQueueHandler;
 
-   private final ScenarioSourceQueueHandler sourceQueueHandler;
+    public ScenarioSourceController(ScenarioSourceQueueHandler sourceQueueHandler) {
+        this.sourceQueueHandler = sourceQueueHandler;
+    }
 
-   public ScenarioSourceController (ScenarioSourceQueueHandler sourceQueueHandler){
-       this.sourceQueueHandler=sourceQueueHandler;
-   }
-
-    @PostMapping(value = "/add", consumes = "application/json")
-    public ResponseEntity<String> addScenario(@RequestBody Scenario scenario) {
-        try {
-            if (scenario == null) {
-                return ResponseEntity.badRequest().body("Request body cannot be null");
-            }
-            if (scenario.getName() == null || scenario.getName().isEmpty()) {
-                return ResponseEntity.badRequest().body("Scenario name is required");
-            }
-            sourceQueueHandler.addScenario(scenario);
-            return ResponseEntity.ok("Scenario " + scenario.getName() + " added to queue");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the request");
-        }
+    @PostMapping(value = "/add")
+    public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario) {
+        sourceQueueHandler.addScenario(scenario);
+        logger.info("Scenario " + scenario.getName() + " added to queue");
+        return ResponseEntity.ok().build();
     }
 }

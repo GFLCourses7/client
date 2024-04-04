@@ -1,9 +1,12 @@
 package com.geeksforless.client.model;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.List;
 import java.util.Objects;
 
 public class Scenario {
+    @NotBlank
     String name;
     String site;
     List<Step> steps;

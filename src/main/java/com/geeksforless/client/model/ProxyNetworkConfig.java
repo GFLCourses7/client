@@ -7,7 +7,8 @@ public class ProxyNetworkConfig {
     private String hostname;
     private Integer port;
 
-    public ProxyNetworkConfig() { }
+    public ProxyNetworkConfig() {
+    }
 
     public ProxyNetworkConfig(String hostname, Integer port) {
         this.hostname = hostname;
