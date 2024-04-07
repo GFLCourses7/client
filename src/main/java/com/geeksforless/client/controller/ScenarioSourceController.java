@@ -23,6 +23,10 @@ public class ScenarioSourceController {
 
     @PostMapping(value = "/add")
     public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario) {
+        if(scenario==null){
+            logger.warn("Scenario is null");
+            return ResponseEntity.badRequest().build();
+        }
         sourceQueueHandler.addScenario(scenario);
         logger.info("Scenario " + scenario.getName() + " added to queue");
         return ResponseEntity.ok().build();
