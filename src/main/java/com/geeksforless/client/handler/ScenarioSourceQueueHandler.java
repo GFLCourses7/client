@@ -7,5 +7,5 @@ public interface ScenarioSourceQueueHandler {
 
     void addScenario(Scenario scenario);
 
-    Optional<Scenario> getScenario() throws InterruptedException;
+    Optional<Scenario> takeScenario() throws InterruptedException;
 }
