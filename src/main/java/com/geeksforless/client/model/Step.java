@@ -7,13 +7,12 @@ import java.util.Objects;
 @Entity
 @Table(name = "steps")
 public class Step {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "action")
     private String action;
-    @Column(name = "value")
+    @Column(name = "step_value")
     private String value;
 
     @ManyToOne
@@ -53,9 +52,6 @@ public class Step {
     public void setValue(String value) {
         this.value = value;
     }
-
-
-
 
 
     public Scenario getScenario() {
