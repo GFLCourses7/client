@@ -4,12 +4,11 @@ import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.Scenario;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/scenario")
@@ -30,5 +29,13 @@ public class ScenarioSourceController {
         sourceQueueHandler.addScenario(scenario);
         logger.info("Scenario " + scenario.getName() + " added to queue");
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/get-scenario")
+    private Optional<Scenario> getScenario(){
+        try {
+            return sourceQueueHandler.takeScenario();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

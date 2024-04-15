@@ -1,9 +1,12 @@
 package com.geeksforless.client.handler;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import com.geeksforless.client.handler.impl.ScenarioSourceQueueHandlerImpl;
 import com.geeksforless.client.model.Scenario;
+import com.geeksforless.client.service.Publisher;
+import com.geeksforless.client.service.PublisherImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +18,9 @@ public class ScenarioSourceQueueHandlerImplTest {
 
     @BeforeEach
     void setUp() {
-        queueHandler = new ScenarioSourceQueueHandlerImpl();
+        Publisher publisher = mock(PublisherImpl.class);
+        doNothing().when(publisher).sendMessage();
+        queueHandler = new ScenarioSourceQueueHandlerImpl(publisher);
     }
 
     @Test
