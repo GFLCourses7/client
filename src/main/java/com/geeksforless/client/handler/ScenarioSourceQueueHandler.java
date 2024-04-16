@@ -1,11 +1,12 @@
 package com.geeksforless.client.handler;
 
 import com.geeksforless.client.model.Scenario;
-import java.util.Optional;
 
 public interface ScenarioSourceQueueHandler {
 
     void addScenario(Scenario scenario);
 
-    Optional<Scenario> takeScenario() throws InterruptedException;
+    Scenario takeScenario();
+
+    Scenario updateScenario(Scenario scenario);
 }
