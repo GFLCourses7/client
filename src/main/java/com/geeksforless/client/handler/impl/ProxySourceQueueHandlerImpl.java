@@ -4,7 +4,6 @@ import com.geeksforless.client.handler.ProxySourceQueueHandler;
 import com.geeksforless.client.model.ProxyConfigHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProxySourceQueueHandlerImpl implements ProxySourceQueueHandler {
