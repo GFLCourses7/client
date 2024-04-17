@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ScenarioDto {
-    private Long scenarioId;
+    private Long id;
     @NotBlank(message = "Scenario name must be present.")
     private String name;
     private String site;
@@ -17,24 +17,24 @@ public class ScenarioDto {
     public ScenarioDto() {
     }
 
-    public ScenarioDto(Long scenarioId,
+    public ScenarioDto(Long id,
                        String name,
                        String site,
                        String result,
                        List<Step> steps) {
-        this.scenarioId = scenarioId;
+        this.id = id;
         this.name = name;
         this.site = site;
         this.result = result;
         this.steps = steps;
     }
 
-    public Long getScenarioId() {
-        return scenarioId;
+    public Long getId() {
+        return id;
     }
 
-    public void setScenarioId(Long scenarioId) {
-        this.scenarioId = scenarioId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -74,11 +74,11 @@ public class ScenarioDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScenarioDto that = (ScenarioDto) o;
-        return Objects.equals(scenarioId, that.scenarioId) && Objects.equals(name, that.name) && Objects.equals(site, that.site) && Objects.equals(result, that.result) && Objects.equals(steps, that.steps);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(site, that.site) && Objects.equals(result, that.result) && Objects.equals(steps, that.steps);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(scenarioId, name, site, result, steps);
+        return Objects.hash(id, name, site, result, steps);
     }
 }
