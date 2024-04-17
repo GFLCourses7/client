@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "7e686d32fd6ada7dae3b887bdb01f70a68d4ccdb03b69342818d1cdf695f3a71";
+    private final String SECRET_KEY;
+
+    public JwtService(@Value("${jwt.token.secret.key}") String secretKey) {
+        this.SECRET_KEY = secretKey;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -38,7 +43,18 @@ public class JwtService {
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24)) //1 день
+                .signWith(getSignInKey())
+                .compact();
+    }
+
+    public String generateTokenForWorker(UserDetails userDetails) {
+        return Jwts
+                .builder()
+                .claims(new HashMap<>())
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24 * 10)) //10 днів
                 .signWith(getSignInKey())
                 .compact();
     }
