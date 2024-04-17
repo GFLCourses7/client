@@ -9,35 +9,25 @@ import com.geeksforless.client.repository.ScenarioRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.geeksforless.client.service.Publisher;
-import com.geeksforless.client.service.PublisherImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandler {
 
-    private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
-    private final Publisher publisher;
-
-    public ScenarioSourceQueueHandlerImpl(Publisher publisher) {
-        this.publisher = publisher;
-    }
+    private final LinkedBlockingQueue<ScenarioDto> queue = new LinkedBlockingQueue<>();
     private final ScenarioRepository scenarioRepository;
 
-    private final LinkedBlockingQueue<ScenarioDto> queue = new LinkedBlockingQueue<>();
 
     public ScenarioSourceQueueHandlerImpl(ScenarioRepository scenarioRepository) {
         this.scenarioRepository = scenarioRepository;
     }
 
+
     @Override
     public void addScenario(Scenario scenario) {
-        queue.add(scenario);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
@@ -50,8 +40,6 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
         }
     }
 
-        publisher.sendMessage();
-    }
     @Override
     public ScenarioDto takeScenarioFromQueue() {
         return queue.poll();
@@ -74,6 +62,4 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     public LinkedBlockingQueue<ScenarioDto> getQueue() {
         return queue;
     }
-
-
 }
