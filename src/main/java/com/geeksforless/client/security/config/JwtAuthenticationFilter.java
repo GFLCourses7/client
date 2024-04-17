@@ -21,32 +21,33 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+  private final JwtService jwtService;
+  private final UserDetailsService userDetailsService;
+  private final TokenRepository tokenRepository;
+
   public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, TokenRepository tokenRepository) {
     this.jwtService = jwtService;
     this.userDetailsService = userDetailsService;
     this.tokenRepository = tokenRepository;
   }
 
-  private final JwtService jwtService;
-  private final UserDetailsService userDetailsService;
-  private final TokenRepository tokenRepository;
-
   @Override
   protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-    if (request.getServletPath().contains("/api/v1/auth")) {
+    if (request.getServletPath().contains("/api/auth")) {
       filterChain.doFilter(request, response);
       return;
     }
     final String authHeader = request.getHeader("Authorization");
     final String jwt;
-    final String login;
+    final String username;
     if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
       throw new JwtException("Incorrect auth header");
     }
     jwt = authHeader.substring(7);
-    login = jwtService.extractUsername(jwt);
-    if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-      UserDetails userDetails = this.userDetailsService.loadUserByUsername(login);
+    username = jwtService.extractUsername(jwt);
+
+    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+      UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
       var isTokenValid = tokenRepository.findByToken(jwt)
           .map(t -> !t.isExpired() && !t.isRevoked())
           .orElse(false);

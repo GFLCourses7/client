@@ -1,10 +1,13 @@
-package com.geeksforless.client.security.auth;
+package com.geeksforless.client.security.auth.dto;
 
-
+import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class AuthenticationRequest {
+
+  @NotBlank
   private String login;
+  @NotBlank
   private String password;
 
   public AuthenticationRequest(String login, String password) {

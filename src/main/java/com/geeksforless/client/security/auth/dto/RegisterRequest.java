@@ -1,4 +1,4 @@
-package com.geeksforless.client.security.auth;
+package com.geeksforless.client.security.auth.dto;
 
 
 import java.util.Objects;

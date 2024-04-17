@@ -1,6 +1,7 @@
-package com.geeksforless.client.model;
+package com.geeksforless.client.security.auth.dto;
 
 
+import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.enums.TokenType;
 import jakarta.persistence.*;
 import java.util.Objects;

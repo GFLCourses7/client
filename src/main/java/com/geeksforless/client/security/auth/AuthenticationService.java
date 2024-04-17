@@ -1,26 +1,26 @@
 package com.geeksforless.client.security.auth;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geeksforless.client.exception.DuplicateLoginException;
-import com.geeksforless.client.model.Token;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.model.enums.TokenType;
 import com.geeksforless.client.repository.TokenRepository;
 import com.geeksforless.client.repository.UserRepository;
+import com.geeksforless.client.security.auth.dto.AuthenticationRequest;
+import com.geeksforless.client.security.auth.dto.AuthenticationResponse;
+import com.geeksforless.client.security.auth.dto.RegisterRequest;
+import com.geeksforless.client.security.auth.dto.Token;
 import com.geeksforless.client.security.config.JwtService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
 
 @Service
 public class AuthenticationService {
+
   private final UserRepository repository;
   private final TokenRepository tokenRepository;
   private final PasswordEncoder passwordEncoder;
@@ -36,12 +36,12 @@ public class AuthenticationService {
   }
 
   public void register(RegisterRequest request) {
-
     User user = new User(
             request.getLogin(),
             passwordEncoder.encode(request.getPassword()),
             Role.USER
     );
+
     try {
       repository.save(user);
     } catch (DataIntegrityViolationException ex) {
@@ -57,15 +57,14 @@ public class AuthenticationService {
         )
     );
 
-    var user = repository.findByLogin(request.getLogin())
+    var user = repository.findByUserName(request.getLogin())
         .orElseThrow();
     var jwtToken = jwtService.generateToken(user);
-    var refreshToken = jwtService.generateRefreshToken(user);
     revokeAllUserTokens(user);
     saveUserToken(user, jwtToken);
 
     return new AuthenticationResponse(
-            jwtToken, refreshToken, user.getRole().name(), user.getId()
+            jwtToken, user.getRole().name(), user.getId()
     );
   }
 
@@ -90,29 +89,5 @@ public class AuthenticationService {
       token.setRevoked(true);
     });
     tokenRepository.saveAll(validUserTokens);
-  }
-
-  public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    final String authHeader = request.getHeader("Authorization");
-    final String refreshToken;
-    final String userLogin;
-    if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-      return;
-    }
-    refreshToken = authHeader.substring(7);
-    userLogin = jwtService.extractUsername(refreshToken);
-    if (userLogin != null) {
-      var user = this.repository.findByLogin(userLogin)
-              .orElseThrow();
-      if (jwtService.isTokenValid(refreshToken, user)) {
-        var accessToken = jwtService.generateToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, accessToken);
-        AuthenticationResponse authResponse = new AuthenticationResponse(
-                accessToken, refreshToken
-        );
-        new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-      }
-    }
   }
 }

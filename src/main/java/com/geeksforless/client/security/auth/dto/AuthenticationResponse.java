@@ -1,4 +1,4 @@
-package com.geeksforless.client.security.auth;
+package com.geeksforless.client.security.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,19 +15,10 @@ public class AuthenticationResponse {
   @JsonProperty("userId")
   private Long userId;
 
-  public AuthenticationResponse() {
-  }
-
-  public AuthenticationResponse(String accessToken, String refreshToken, String role, Long userId) {
+  public AuthenticationResponse(String accessToken, String role, Long userId) {
     this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
     this.role = role;
     this.userId = userId;
-  }
-
-  public AuthenticationResponse(String accessToken, String refreshToken) {
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
   }
 
   public String getAccessToken() {
@@ -36,14 +27,6 @@ public class AuthenticationResponse {
 
   public void setAccessToken(String accessToken) {
     this.accessToken = accessToken;
-  }
-
-  public String getRefreshToken() {
-    return refreshToken;
-  }
-
-  public void setRefreshToken(String refreshToken) {
-    this.refreshToken = refreshToken;
   }
 
   public String getRole() {

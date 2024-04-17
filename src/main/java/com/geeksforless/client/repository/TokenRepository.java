@@ -1,6 +1,6 @@
 package com.geeksforless.client.repository;
 
-import com.geeksforless.client.model.Token;
+import com.geeksforless.client.security.auth.dto.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
