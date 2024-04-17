@@ -80,7 +80,7 @@ public class ScenarioSourceQueueHandlerImplTest {
 
         // Assert
         assertNotNull(takenScenario);
-        assertEquals(scenarioDto.getScenarioId(), takenScenario.getScenarioId());
+        assertEquals(scenarioDto.getId(), takenScenario.getId());
         assertEquals(scenarioDto.getName(), takenScenario.getName());
         assertEquals(scenarioDto.getSite(), takenScenario.getSite());
         assertEquals(scenarioDto.getResult(), takenScenario.getResult());
@@ -91,14 +91,14 @@ public class ScenarioSourceQueueHandlerImplTest {
     void updateScenario_WithExistingScenarioDto_ShouldUpdateScenarioAndReturnUpdatedDto() {
         // Arrange
         ScenarioDto scenarioDto = new ScenarioDto();
-        scenarioDto.setScenarioId(1L);
+        scenarioDto.setId(1L);
         scenarioDto.setResult("Success");
 
         Scenario existingScenario = new Scenario();
         existingScenario.setId(1L);
         existingScenario.setName("Test Scenario");
 
-        when(scenarioRepository.findById(scenarioDto.getScenarioId())).thenReturn(of(existingScenario));
+        when(scenarioRepository.findById(scenarioDto.getId())).thenReturn(of(existingScenario));
         when(scenarioRepository.save(any(Scenario.class))).thenReturn(existingScenario);
 
         // Act
@@ -106,7 +106,7 @@ public class ScenarioSourceQueueHandlerImplTest {
 
         // Assert
         assertNotNull(updatedScenarioDto);
-        assertEquals(scenarioDto.getScenarioId(), updatedScenarioDto.getScenarioId());
+        assertEquals(scenarioDto.getId(), updatedScenarioDto.getId());
         assertEquals(scenarioDto.getResult(), updatedScenarioDto.getResult());
         assertTrue(existingScenario.isDone());
         assertEquals(scenarioDto.getResult(), existingScenario.getResult());

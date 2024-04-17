@@ -48,8 +48,8 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     @Override
     @Transactional
     public ScenarioDto updateScenario(ScenarioDto scenarioDto) {
-        Scenario scenarioFromRepo = scenarioRepository.findById(scenarioDto.getScenarioId())
-                .orElseThrow(() -> new ScenarioNotFoundException("Scenario with {} not found", scenarioDto.getScenarioId()));
+        Scenario scenarioFromRepo = scenarioRepository.findById(scenarioDto.getId())
+                .orElseThrow(() -> new ScenarioNotFoundException("Scenario with {} not found", scenarioDto.getId()));
 
         scenarioFromRepo.setDone(true);
         scenarioFromRepo.setResult(scenarioDto.getResult());
