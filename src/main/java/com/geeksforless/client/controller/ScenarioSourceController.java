@@ -2,8 +2,10 @@ package com.geeksforless.client.controller;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.Scenario;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,13 +23,15 @@ public class ScenarioSourceController {
     }
 
     @PostMapping(value = "/add")
-    public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario) {
+    public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario, HttpServletRequest request) {
+        System.out.println(request.isUserInRole("ROLE_USER"));
         if(scenario==null){
             logger.warn("Scenario is null");
             return ResponseEntity.badRequest().build();
         }
         sourceQueueHandler.addScenario(scenario);
         logger.info("Scenario " + scenario.getName() + " added to queue");
+
         return ResponseEntity.ok().build();
     }
     @GetMapping("/get-scenario")

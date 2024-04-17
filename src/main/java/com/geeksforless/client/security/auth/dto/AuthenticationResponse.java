@@ -8,8 +8,6 @@ import java.util.Objects;
 public class AuthenticationResponse {
   @JsonProperty("access_token")
   private String accessToken;
-  @JsonProperty("refresh_token")
-  private String refreshToken;
   @JsonProperty("role")
   private String role;
   @JsonProperty("userId")
@@ -50,11 +48,11 @@ public class AuthenticationResponse {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     AuthenticationResponse that = (AuthenticationResponse) o;
-    return Objects.equals(accessToken, that.accessToken) && Objects.equals(refreshToken, that.refreshToken) && Objects.equals(role, that.role) && Objects.equals(userId, that.userId);
+    return Objects.equals(accessToken, that.accessToken) && Objects.equals(role, that.role) && Objects.equals(userId, that.userId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(accessToken, refreshToken, role, userId);
+    return Objects.hash(accessToken, role, userId);
   }
 }

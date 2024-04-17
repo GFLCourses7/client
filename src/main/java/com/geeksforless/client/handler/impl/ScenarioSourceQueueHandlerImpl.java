@@ -11,17 +11,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandler {
 
     private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
-    private final Publisher publisher;
-
-    public ScenarioSourceQueueHandlerImpl(Publisher publisher) {
-        this.publisher = publisher;
-    }
 
     @Override
     public void addScenario(Scenario scenario) {
         queue.add(scenario);
-
-        publisher.sendMessage();
     }
     @Override
     public Optional<Scenario> takeScenario() throws InterruptedException {

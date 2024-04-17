@@ -15,7 +15,9 @@ import com.geeksforless.client.security.config.JwtService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,7 +39,7 @@ public class AuthenticationService {
 
   public void register(RegisterRequest request) {
     User user = new User(
-            request.getLogin(),
+            request.getUsername(),
             passwordEncoder.encode(request.getPassword()),
             Role.USER
     );
@@ -52,13 +54,16 @@ public class AuthenticationService {
   public AuthenticationResponse authenticate(AuthenticationRequest request) {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
-            request.getLogin(),
+            request.getUsername(),
             request.getPassword()
         )
     );
 
-    var user = repository.findByUserName(request.getLogin())
-        .orElseThrow();
+    String username = request.getUsername();
+
+    var user = repository.findByUserName(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User with username - " + username + " is not found."));
+
     var jwtToken = jwtService.generateToken(user);
     revokeAllUserTokens(user);
     saveUserToken(user, jwtToken);
