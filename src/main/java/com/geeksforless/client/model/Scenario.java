@@ -109,4 +109,17 @@ public class Scenario {
     public int hashCode() {
         return Objects.hash(id, name, site, result, isDone, user, steps);
     }
+
+    @Override
+    public String toString() {
+        return "Scenario{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", site='" + site + '\'' +
+                ", result='" + result + '\'' +
+                ", isDone=" + isDone +
+                ", user=" + user +
+                ", steps=" + steps +
+                '}';
+    }
 }
