@@ -1,5 +1,6 @@
 package com.geeksforless.client.model;
 
+import com.geeksforless.client.controller.dto.ScenarioDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -108,5 +109,13 @@ public class Scenario {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, site, result, isDone, user, steps);
+    }
+
+    public ScenarioDto toDto() {
+        return new ScenarioDto(this.getId(),
+                this.getName(),
+                this.getSite(),
+                this.getResult(),
+                this.getSteps());
     }
 }

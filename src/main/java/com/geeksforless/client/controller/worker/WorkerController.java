@@ -1,9 +1,10 @@
 package com.geeksforless.client.controller.worker;
 
+import com.geeksforless.client.controller.dto.ScenarioDto;
 import com.geeksforless.client.model.ProxyConfigHolder;
-import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.service.WorkerService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,17 +18,18 @@ public class WorkerController {
     }
 
     @GetMapping("/get-proxy")
-    public ProxyConfigHolder getProxy() {
-        return workerService.getProxy();
+    public ResponseEntity<ProxyConfigHolder> getProxy() {
+        return ResponseEntity.ok(workerService.getProxy());
     }
 
     @GetMapping("/get-scenario")
-    public Scenario getScenario() {
-        return workerService.getScenario();
+    public ResponseEntity<ScenarioDto> getScenario() {
+        return ResponseEntity.ok(workerService.getScenario());
     }
 
     @PostMapping("/set-result")
-    public void setResult(@Valid @RequestBody Scenario scenario) {
+    public ResponseEntity<Void> setResult(@Valid @RequestBody ScenarioDto scenario) {
         workerService.updateScenario(scenario);
+        return ResponseEntity.ok().build();
     }
 }

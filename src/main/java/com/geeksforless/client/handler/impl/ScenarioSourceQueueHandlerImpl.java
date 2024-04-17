@@ -1,9 +1,14 @@
 package com.geeksforless.client.handler.impl;
 
+import com.geeksforless.client.controller.dto.ScenarioDto;
 import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.Scenario;
+import com.geeksforless.client.model.User;
 import com.geeksforless.client.repository.ScenarioRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +19,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
 
     private final ScenarioRepository scenarioRepository;
 
-    private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<ScenarioDto> queue = new LinkedBlockingQueue<>();
 
     public ScenarioSourceQueueHandlerImpl(ScenarioRepository scenarioRepository) {
         this.scenarioRepository = scenarioRepository;
@@ -22,31 +27,40 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
 
     @Override
     public void addScenario(Scenario scenario) {
-        Scenario saved = scenarioRepository.save(scenario);
-        queue.add(saved);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails) {
+                scenario.setUser((User) principal);
+
+                Scenario saved = scenarioRepository.save(scenario);
+                if (!saved.isDone()) queue.add(saved.toDto());
+            }
+        }
     }
 
     @Override
-    public Scenario takeScenario() {
+    public ScenarioDto takeScenarioFromQueue() {
         return queue.poll();
     }
 
     @Override
     @Transactional
-    public Scenario updateScenario(Scenario scenario) {
-        Scenario scenarioFromRepo = scenarioRepository.findById(scenario.getId())
-                .orElseThrow(() -> new ScenarioNotFoundException("Scenario with {} not found", scenario.getId()));
+    public ScenarioDto updateScenario(ScenarioDto scenarioDto) {
+        Scenario scenarioFromRepo = scenarioRepository.findById(scenarioDto.getScenarioId())
+                .orElseThrow(() -> new ScenarioNotFoundException("Scenario with {} not found", scenarioDto.getScenarioId()));
 
         scenarioFromRepo.setDone(true);
-        scenarioFromRepo.setResult(scenario.getResult());
+        scenarioFromRepo.setResult(scenarioDto.getResult());
 
         Scenario updated = scenarioRepository.save(scenarioFromRepo);
-        queue.add(updated);
 
-        return updated;
+        return updated.toDto();
     }
 
-    public LinkedBlockingQueue<Scenario> getQueue() {
+    public LinkedBlockingQueue<ScenarioDto> getQueue() {
         return queue;
     }
+
+
 }

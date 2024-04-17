@@ -1,8 +1,8 @@
 package com.geeksforless.client.service;
 
+import com.geeksforless.client.controller.dto.ScenarioDto;
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.ProxyConfigHolder;
-import com.geeksforless.client.model.Scenario;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,11 +20,11 @@ public class WorkerService {
         return proxySourceService.getProxies().get(0); //todo rewrite to get next proxy
     }
 
-    public Scenario getScenario() {
-        return scenarioSourceQueueHandler.takeScenario();
+    public ScenarioDto getScenario() {
+        return scenarioSourceQueueHandler.takeScenarioFromQueue();
     }
 
-    public void updateScenario(Scenario scenario) {
-        scenarioSourceQueueHandler.updateScenario(scenario);
+    public void updateScenario(ScenarioDto scenarioDto) {
+        scenarioSourceQueueHandler.updateScenario(scenarioDto);
     }
 }

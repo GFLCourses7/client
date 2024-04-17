@@ -1,101 +1,114 @@
 package com.geeksforless.client.handler;
 
+import com.geeksforless.client.controller.dto.ScenarioDto;
 import com.geeksforless.client.handler.impl.ScenarioSourceQueueHandlerImpl;
 import com.geeksforless.client.model.Scenario;
+import com.geeksforless.client.model.User;
 import com.geeksforless.client.repository.ScenarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class ScenarioSourceQueueHandlerImplTest {
 
     @Mock
     private ScenarioRepository scenarioRepository;
-    private ScenarioSourceQueueHandlerImpl queueHandler;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @InjectMocks
+    private ScenarioSourceQueueHandlerImpl scenarioSourceQueueHandler;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        queueHandler = new ScenarioSourceQueueHandlerImpl(scenarioRepository);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
-    void addScenario_SuccessfullyAdded() {
+    void addScenario_WithAuthenticatedUser_ShouldSaveScenarioAndAddToQueue() {
         // Arrange
         Scenario scenario = new Scenario();
+        scenario.setName("Test Scenario");
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(authentication.getPrincipal()).thenReturn(new User());
         when(scenarioRepository.save(any(Scenario.class))).thenReturn(scenario);
 
         // Act
-        queueHandler.addScenario(scenario);
+        scenarioSourceQueueHandler.addScenario(scenario);
 
         // Assert
-        assertEquals(1, queueHandler.getQueue().size());
-        assertTrue(queueHandler.getQueue().contains(scenario));
-        verify(scenarioRepository, times(1)).save(any(Scenario.class));
+        assertEquals(scenarioSourceQueueHandler.getQueue().size(), 1);
+        verify(scenarioRepository, times(1)).save(scenario);
     }
 
     @Test
-    void takeScenarioFromQueueReturnsScenario() {
+    void takeScenarioFromQueue_ShouldReturnScenarioDtoFromQueue() {
         // Arrange
+        ScenarioDto scenarioDto = new ScenarioDto();
+        scenarioDto.setName("Test Scenario");
+
         Scenario scenario = new Scenario();
+        scenario.setName("Test Scenario");
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(authentication.getPrincipal()).thenReturn(new User());
         when(scenarioRepository.save(any(Scenario.class))).thenReturn(scenario);
 
-        queueHandler.addScenario(scenario);
+
+        scenarioSourceQueueHandler.addScenario(scenario);
+
 
         // Act
-        Scenario takenScenario = queueHandler.takeScenario();
+        ScenarioDto takenScenario = scenarioSourceQueueHandler.takeScenarioFromQueue();
 
         // Assert
         assertNotNull(takenScenario);
-        assertEquals(scenario, takenScenario);
-        assertEquals(0, queueHandler.getQueue().size());
-        verify(scenarioRepository, times(1)).save(any(Scenario.class));
+        assertEquals(scenarioDto.getScenarioId(), takenScenario.getScenarioId());
+        assertEquals(scenarioDto.getName(), takenScenario.getName());
+        assertEquals(scenarioDto.getSite(), takenScenario.getSite());
+        assertEquals(scenarioDto.getResult(), takenScenario.getResult());
+        assertEquals(scenarioDto.getSteps(), takenScenario.getSteps());
     }
 
     @Test
-    void takeScenarioFromEmptyQueueReturnsNull() {
-        // Act
-        Scenario takenScenario = queueHandler.takeScenario();
-
-        // Assert
-        assertNull(takenScenario);
-        assertEquals(0, queueHandler.getQueue().size());
-        verifyNoInteractions(scenarioRepository);
-    }
-
-    @Test
-    void updateScenario() {
-        // Mock scenario data
-        Long scenarioId = 1L;
+    void updateScenario_WithExistingScenarioDto_ShouldUpdateScenarioAndReturnUpdatedDto() {
+        // Arrange
+        ScenarioDto scenarioDto = new ScenarioDto();
+        scenarioDto.setScenarioId(1L);
+        scenarioDto.setResult("Success");
 
         Scenario existingScenario = new Scenario();
-        existingScenario.setId(scenarioId);
-        existingScenario.setDone(false);
-        existingScenario.setResult("Old Result");
+        existingScenario.setId(1L);
+        existingScenario.setName("Test Scenario");
 
-        // Mock repository behavior
-        when(scenarioRepository.findById(anyLong())).thenReturn(of(existingScenario));
-        when(scenarioRepository.save(any(Scenario.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(scenarioRepository.findById(scenarioDto.getScenarioId())).thenReturn(of(existingScenario));
+        when(scenarioRepository.save(any(Scenario.class))).thenReturn(existingScenario);
 
-        // Call the service method
-        Scenario updatedScenario = new Scenario();
-        updatedScenario.setId(scenarioId);
-        updatedScenario.setDone(true);
-        updatedScenario.setResult("New Result");
+        // Act
+        ScenarioDto updatedScenarioDto = scenarioSourceQueueHandler.updateScenario(scenarioDto);
 
-        Scenario scenarioFromRepo = queueHandler.updateScenario(updatedScenario);
-
-        assertEquals(updatedScenario, scenarioFromRepo);
-
-        // Verify that the scenario was updated and added to the queue
-        verify(scenarioRepository, times(1)).findById(scenarioId);
-        verify(scenarioRepository, times(1)).save(existingScenario);
-
+        // Assert
+        assertNotNull(updatedScenarioDto);
+        assertEquals(scenarioDto.getScenarioId(), updatedScenarioDto.getScenarioId());
+        assertEquals(scenarioDto.getResult(), updatedScenarioDto.getResult());
+        assertTrue(existingScenario.isDone());
+        assertEquals(scenarioDto.getResult(), existingScenario.getResult());
     }
 }

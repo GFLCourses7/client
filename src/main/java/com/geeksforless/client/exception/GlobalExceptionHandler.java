@@ -30,6 +30,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    //сценарій не знайдено по id
+    @ExceptionHandler(value = ScenarioNotFoundException.class)
+    public ResponseEntity<String> handleScenarioNotFoundException(ScenarioNotFoundException ex) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(value = {IllegalArgumentException.class})
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
