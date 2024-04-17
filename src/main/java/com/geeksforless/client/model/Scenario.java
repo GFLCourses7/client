@@ -12,7 +12,7 @@ public class Scenario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @NotBlank(message = "Scenario must contain a name")
     @Column(name = "name")
     private String name;
     @Column(name = "site")
@@ -108,5 +108,13 @@ public class Scenario {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, site, result, isDone, user, steps);
+    }
+
+    public ScenarioDto toDto() {
+        return new ScenarioDto(this.getId(),
+                this.getName(),
+                this.getSite(),
+                this.getResult(),
+                this.getSteps());
     }
 }
