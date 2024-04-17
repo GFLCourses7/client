@@ -7,5 +7,5 @@ public interface ProxySourceQueueHandler {
 
     void addProxy(ProxyConfigHolder proxyConfigHolder);
 
-    ProxyConfigHolder getProxy() throws InterruptedException;
+    ProxyConfigHolder getProxy() ;
 }
