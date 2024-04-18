@@ -1,8 +1,7 @@
 package com.geeksforless.client.security.auth;
 
-import com.geeksforless.client.security.auth.dto.AuthenticationRequest;
-import com.geeksforless.client.security.auth.dto.AuthenticationResponse;
-import com.geeksforless.client.security.auth.dto.RegisterRequest;
+import com.geeksforless.client.security.auth.dto.AuthRequest;
+import com.geeksforless.client.security.auth.dto.AuthResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +17,12 @@ public class AuthenticationController {
   }
 
   @PostMapping("/register")
-  public void register(@RequestBody RegisterRequest request) {
+  public void register(@RequestBody AuthRequest request) {
     service.register(request);
   }
 
   @PostMapping("/authenticate")
-  public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+  public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
     return ResponseEntity.ok(service.authenticate(request));
   }
 }

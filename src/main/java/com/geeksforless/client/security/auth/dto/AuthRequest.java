@@ -1,17 +1,16 @@
 package com.geeksforless.client.security.auth.dto;
 
-
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.Objects;
 
-public class RegisterRequest {
+public class AuthRequest {
+
   @NotBlank
   private String username;
   @NotBlank
   private String password;
 
-  public RegisterRequest(String username, String password) {
+  public AuthRequest(String username, String password) {
     this.username = username;
     this.password = password;
   }
@@ -36,7 +35,7 @@ public class RegisterRequest {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    RegisterRequest that = (RegisterRequest) o;
+    AuthRequest that = (AuthRequest) o;
     return Objects.equals(username, that.username) && Objects.equals(password, that.password);
   }
 

@@ -7,9 +7,8 @@ import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.model.enums.TokenType;
 import com.geeksforless.client.repository.TokenRepository;
 import com.geeksforless.client.repository.UserRepository;
-import com.geeksforless.client.security.auth.dto.AuthenticationRequest;
-import com.geeksforless.client.security.auth.dto.AuthenticationResponse;
-import com.geeksforless.client.security.auth.dto.RegisterRequest;
+import com.geeksforless.client.security.auth.dto.AuthRequest;
+import com.geeksforless.client.security.auth.dto.AuthResponse;
 import com.geeksforless.client.security.auth.dto.Token;
 import com.geeksforless.client.security.config.JwtService;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,7 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,7 +35,7 @@ public class AuthenticationService {
     this.authenticationManager = authenticationManager;
   }
 
-  public void register(RegisterRequest request) {
+  public void register(AuthRequest request) {
     User user = new User(
             request.getUsername(),
             passwordEncoder.encode(request.getPassword()),
@@ -51,7 +49,7 @@ public class AuthenticationService {
     }
   }
 
-  public AuthenticationResponse authenticate(AuthenticationRequest request) {
+  public AuthResponse authenticate(AuthRequest request) {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             request.getUsername(),
@@ -68,8 +66,8 @@ public class AuthenticationService {
     revokeAllUserTokens(user);
     saveUserToken(user, jwtToken);
 
-    return new AuthenticationResponse(
-            jwtToken, user.getRole().name(), user.getId()
+    return new AuthResponse(
+            jwtToken
     );
   }
 
