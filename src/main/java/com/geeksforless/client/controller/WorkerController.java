@@ -1,7 +1,8 @@
 package com.geeksforless.client.controller;
 
+import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.ScenarioDto;
-import com.geeksforless.client.service.scenario.ScenarioService;
+import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -12,17 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/internal")
-public class InternalApiController {
-    private static final Logger logger = LogManager.getLogger(InternalApiController.class);
-    private final ScenarioService scenarioService;
+public class WorkerController {
+    private static final Logger logger = LogManager.getLogger(WorkerController.class);
+    private final ScenarioSourceQueueHandler queueHandler;
 
-    public InternalApiController(ScenarioService scenarioService){
-        this.scenarioService = scenarioService;
+    public WorkerController(ScenarioSourceQueueHandler queueHandler) {
+        this.queueHandler = queueHandler;
     }
+
+
     @PostMapping("/set-result")
-    public ResponseEntity<?> setResult(@RequestBody ScenarioDto scenarioDto){
+    public ResponseEntity<?> setResult(@Valid @RequestBody ScenarioDto scenarioDto) {
         logger.info("Scenario " + scenarioDto.getName() + " going to updated");
-        scenarioService.setScenarioResult(scenarioDto);
+        queueHandler.updateScenario(scenarioDto);
         return ResponseEntity.ok().build();
     }
 }

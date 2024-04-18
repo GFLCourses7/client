@@ -1,7 +1,7 @@
 package com.geeksforless.client.controller;
 
+import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.ScenarioDto;
-import com.geeksforless.client.service.scenario.impl.ScenarioServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class InternalApiControllerTest {
+class WorkerControllerTest {
 
     @Mock
-    private ScenarioServiceImpl scenarioService;
+    private ScenarioSourceQueueHandler queueHandler;
 
     @InjectMocks
-    private  InternalApiController internalApiController;
+    private  WorkerController workerController;
 
     @BeforeEach
     void setUp(){
@@ -33,9 +33,9 @@ class InternalApiControllerTest {
         ScenarioDto scenarioDto = new ScenarioDto();
         scenarioDto.setName("Test Scenario");
 
-        ResponseEntity<?> responseEntity = internalApiController.setResult(scenarioDto);
+        ResponseEntity<?> responseEntity = workerController.setResult(scenarioDto);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(scenarioService, times(1)).setScenarioResult(scenarioDto);
+        verify(queueHandler, times(1)).updateScenario(scenarioDto);
     }
 }

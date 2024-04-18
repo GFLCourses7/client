@@ -1,6 +1,5 @@
 package com.geeksforless.client.handler.impl;
 
-import com.geeksforless.client.controller.InternalApiController;
 import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.Scenario;
@@ -16,7 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandler {
-    private static final Logger logger = LogManager.getLogger(InternalApiController.class);
+    private static final Logger logger = LogManager.getLogger(ScenarioSourceQueueHandlerImpl.class);
     private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
     private final Publisher publisher;
 
