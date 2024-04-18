@@ -78,4 +78,14 @@ public class Step {
     public int hashCode() {
         return Objects.hash(id, action, value, scenario);
     }
+
+    @Override
+    public String toString() {
+        return "Step{" +
+                "id=" + id +
+                ", action='" + action + '\'' +
+                ", value='" + value + '\'' +
+                ", scenario=" + scenario +
+                '}';
+    }
 }

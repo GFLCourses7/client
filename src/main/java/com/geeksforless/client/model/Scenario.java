@@ -116,5 +116,17 @@ public class Scenario {
                 this.getSite(),
                 this.getResult(),
                 this.getSteps());
+      
+    @Override
+    public String toString() {
+        return "Scenario{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", site='" + site + '\'' +
+                ", result='" + result + '\'' +
+                ", isDone=" + isDone +
+                ", user=" + user +
+                ", steps=" + steps +
+                '}';
     }
 }
