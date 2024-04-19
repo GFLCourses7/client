@@ -1,4 +1,6 @@
-package com.geeksforless.client.model;
+package com.geeksforless.client.model.projections;
+
+import com.geeksforless.client.model.Step;
 
 /**
  * Projection for {@link Step}

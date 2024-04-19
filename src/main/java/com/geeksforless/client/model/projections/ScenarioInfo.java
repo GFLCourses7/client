@@ -1,4 +1,7 @@
-package com.geeksforless.client.model;
+package com.geeksforless.client.model.projections;
+
+import com.geeksforless.client.model.Scenario;
+import com.geeksforless.client.model.projections.StepInfo;
 
 import java.util.List;
 
