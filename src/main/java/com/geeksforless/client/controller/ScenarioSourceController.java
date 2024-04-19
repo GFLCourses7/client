@@ -2,13 +2,11 @@ package com.geeksforless.client.controller;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.Scenario;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
-import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -23,9 +21,9 @@ public class ScenarioSourceController {
     }
 
     @PostMapping(value = "/add")
-    public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario, HttpServletRequest request) {
-        System.out.println(request.isUserInRole("ROLE_USER"));
-        if(scenario==null){
+    public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario) {
+//        System.out.println(request.isUserInRole("ROLE_USER"));
+        if (scenario == null) {
             logger.warn("Scenario is null");
             return ResponseEntity.badRequest().build();
         }
@@ -34,8 +32,9 @@ public class ScenarioSourceController {
 
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/get-scenario")
-    private Optional<Scenario> getScenario(){
+    private Optional<Scenario> getScenario() {
         try {
             return sourceQueueHandler.takeScenario();
         } catch (InterruptedException e) {

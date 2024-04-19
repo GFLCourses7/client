@@ -5,22 +5,22 @@ import java.util.Objects;
 
 public class AuthRequest {
 
-  @NotBlank
-  private String username;
-  @NotBlank
+  @NotBlank(message = "Enter login")
+  private String login;
+  @NotBlank(message = "Enter password")
   private String password;
 
-  public AuthRequest(String username, String password) {
-    this.username = username;
+  public AuthRequest(String login, String password) {
+    this.login = login;
     this.password = password;
   }
 
-  public String getUsername() {
-    return username;
+  public String getLogin() {
+    return login;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setLogin(String login) {
+    this.login = login;
   }
 
   public String getPassword() {
@@ -36,11 +36,11 @@ public class AuthRequest {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     AuthRequest that = (AuthRequest) o;
-    return Objects.equals(username, that.username) && Objects.equals(password, that.password);
+    return Objects.equals(login, that.login) && Objects.equals(password, that.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(username, password);
+    return Objects.hash(login, password);
   }
 }
