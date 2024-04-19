@@ -36,8 +36,8 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     }
 
     @Override
-    public Optional<Scenario> takeScenario() throws InterruptedException {
-        return Optional.of(queue.take());
+    public Optional<Scenario> takeScenario() {
+        return Optional.ofNullable(queue.poll());
     }
 
     @Override
