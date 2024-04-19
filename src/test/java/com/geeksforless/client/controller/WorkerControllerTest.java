@@ -1,7 +1,6 @@
 package com.geeksforless.client.controller;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
-import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.ScenarioDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,10 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.ClassBasedNavigableIterableAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -27,10 +25,10 @@ class WorkerControllerTest {
     private ScenarioSourceQueueHandler queueHandler;
 
     @InjectMocks
-    private  WorkerController workerController;
+    private WorkerController workerController;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -50,11 +48,6 @@ class WorkerControllerTest {
         ResponseEntity<?> responseEntity = workerController.setResult(fakeScenario);
         int responseCode = responseEntity.getStatusCode().value();
 
-        assertEquals(HttpStatus.OK.value(),responseCode);
-
-
-
-
-
+        assertEquals(HttpStatus.OK.value(), responseCode);
     }
 }

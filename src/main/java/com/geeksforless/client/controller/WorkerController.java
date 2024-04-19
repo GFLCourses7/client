@@ -21,7 +21,6 @@ public class WorkerController {
         this.queueHandler = queueHandler;
     }
 
-
     @PostMapping("/set-result")
     public ResponseEntity<?> setResult(@Valid @RequestBody ScenarioDto scenarioDto) {
         logger.info("Scenario " + scenarioDto.getName() + " going to updated");

@@ -83,11 +83,12 @@ public class ScenarioSourceQueueHandlerImplTest {
         ScenarioDto updatedScenarioDto = queueHandler.updateScenario(scenarioDto);
 
         assertEquals(scenarioDto.getResult(), updatedScenarioDto.getResult());
-        assertEquals(true, scenario.isDone());
+        assertTrue(scenario.isDone());
     }
 
     @Test
     public void testUpdateScenario_ScenarioNotFound() {
+
         ScenarioDto scenarioDto = new ScenarioDto();
         scenarioDto.setId(1L);
 
