@@ -1,8 +1,5 @@
 package com.geeksforless.client.handler;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.geeksforless.client.handler.impl.ScenarioSourceQueueHandlerImpl;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.service.Publisher;
@@ -12,6 +9,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+
 public class ScenarioSourceQueueHandlerImplTest {
 
     private ScenarioSourceQueueHandlerImpl queueHandler;
@@ -20,7 +22,7 @@ public class ScenarioSourceQueueHandlerImplTest {
     void setUp() {
         Publisher publisher = mock(PublisherImpl.class);
         doNothing().when(publisher).sendMessage();
-        queueHandler = new ScenarioSourceQueueHandlerImpl(publisher);
+        queueHandler = new ScenarioSourceQueueHandlerImpl();
     }
 
     @Test
@@ -37,7 +39,7 @@ public class ScenarioSourceQueueHandlerImplTest {
     }
 
     @Test
-    void takeScenarioFromQueueReturnsScenario() throws InterruptedException {
+    void takeScenarioFromQueueReturnsScenario() {
         // Arrange
         Scenario scenario = new Scenario();
         queueHandler.addScenario(scenario);
