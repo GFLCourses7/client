@@ -3,6 +3,7 @@ package com.geeksforless.client.handler;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.handler.impl.ScenarioSourceQueueHandlerImpl;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.ScenarioDto;
@@ -19,6 +20,7 @@ import static java.util.Optional.of;
 
 import java.util.Optional;
 
+
 public class ScenarioSourceQueueHandlerImplTest {
     @InjectMocks
     private ScenarioSourceQueueHandlerImpl queueHandler;
@@ -30,7 +32,6 @@ public class ScenarioSourceQueueHandlerImplTest {
     void setUp() {
         Publisher publisher = mock(PublisherImpl.class);
         doNothing().when(publisher).sendMessage();
-        queueHandler = new ScenarioSourceQueueHandlerImpl(publisher, scenarioRepository);
         MockitoAnnotations.openMocks(this);
     }
 
@@ -63,17 +64,37 @@ public class ScenarioSourceQueueHandlerImplTest {
     }
 
     @Test
-    void updateScenario_WithExistingScenarioDto_ShouldUpdateScenarioAndReturnUpdatedDto() {
-        // Arrange
+    public void testUpdateScenario_Success() {
         ScenarioDto scenarioDto = new ScenarioDto();
         scenarioDto.setId(1L);
+        scenarioDto.setName("Test");
         scenarioDto.setResult("Success");
 
-        Scenario existingScenario = new Scenario();
-        existingScenario.setId(1L);
-        existingScenario.setName("Test Scenario");
+        Scenario scenario = new Scenario();
+        scenario.setId(1L);
+        scenario.setName("Test Scenario");
+        scenario.setResult("Initial");
+        scenario.setDone(false);
 
-        when(scenarioRepository.findById(scenarioDto.getId())).thenReturn(of(existingScenario));
-        when(scenarioRepository.save(any(Scenario.class))).thenReturn(existingScenario);
+
+        when(scenarioRepository.findById(scenarioDto.getId())).thenReturn(of(scenario));
+        when(scenarioRepository.save(any(Scenario.class))).thenReturn(scenario);
+
+        ScenarioDto updatedScenarioDto = queueHandler.updateScenario(scenarioDto);
+
+        assertEquals(scenarioDto.getResult(), updatedScenarioDto.getResult());
+        assertEquals(true, scenario.isDone());
+    }
+
+    @Test
+    public void testUpdateScenario_ScenarioNotFound() {
+        ScenarioDto scenarioDto = new ScenarioDto();
+        scenarioDto.setId(1L);
+
+        when(scenarioRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ScenarioNotFoundException.class, () -> {
+            queueHandler.updateScenario(scenarioDto);
+        });
     }
 }

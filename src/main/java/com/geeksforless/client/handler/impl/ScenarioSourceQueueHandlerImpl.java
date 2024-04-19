@@ -9,6 +9,7 @@ import com.geeksforless.client.service.Publisher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -40,6 +41,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     }
 
     @Override
+    @Transactional
     public ScenarioDto updateScenario(ScenarioDto scenarioDto) {
         Optional<Scenario> optionalScenario = scenarioRepository.findById(scenarioDto.getId());
 

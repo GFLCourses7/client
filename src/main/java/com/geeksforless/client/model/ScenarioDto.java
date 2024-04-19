@@ -81,7 +81,7 @@ public class ScenarioDto {
 
     @Override
     public String toString() {
-        return "ScenarioDtoInternal{" +
+        return "ScenarioDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", site='" + site + '\'' +

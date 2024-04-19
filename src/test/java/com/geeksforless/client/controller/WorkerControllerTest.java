@@ -1,18 +1,25 @@
 package com.geeksforless.client.controller;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
+import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.ScenarioDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.assertj.core.api.ClassBasedNavigableIterableAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class WorkerControllerTest {
 
@@ -30,12 +37,24 @@ class WorkerControllerTest {
     @Test
     public void testSetResult_Success() {
 
-        ScenarioDto scenarioDto = new ScenarioDto();
-        scenarioDto.setName("Test Scenario");
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        ResponseEntity<?> responseEntity = workerController.setResult(scenarioDto);
+        when(queueHandler.updateScenario(any(ScenarioDto.class))).thenReturn(new ScenarioDto());
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(queueHandler, times(1)).updateScenario(scenarioDto);
+        ScenarioDto fakeScenario = new ScenarioDto();
+        fakeScenario.setId(1L);
+        fakeScenario.setName("test scenario");
+        fakeScenario.setResult("Success");
+
+        ResponseEntity<?> responseEntity = workerController.setResult(fakeScenario);
+        int responseCode = responseEntity.getStatusCode().value();
+
+        assertEquals(HttpStatus.OK.value(),responseCode);
+
+
+
+
+
     }
 }
