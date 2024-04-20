@@ -1,7 +1,6 @@
 package com.geeksforless.client.security.config;
 
 import com.geeksforless.client.repository.TokenRepository;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

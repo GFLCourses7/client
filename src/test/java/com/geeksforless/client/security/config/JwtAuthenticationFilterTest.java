@@ -84,14 +84,12 @@ public class JwtAuthenticationFilterTest {
     }
 
     @Test
-    public void testJwtAuthenticationFilter_InvalidToken() throws Exception {
+    public void testJwtAuthenticationFilter_InvalidToken() {
         String invalidToken = "invalid.Token.test";
 
-        assertThrows(MalformedJwtException.class, ()-> {
-            mockMvc.perform(MockMvcRequestBuilders.get("/")
-                            .header("Authorization", "Bearer " + invalidToken))
-                    .andReturn();
-        });
+        assertThrows(MalformedJwtException.class, ()-> mockMvc.perform(MockMvcRequestBuilders.get("/")
+                        .header("Authorization", "Bearer " + invalidToken))
+                .andReturn());
     }
 
     @Test
