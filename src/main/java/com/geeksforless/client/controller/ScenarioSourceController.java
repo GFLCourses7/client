@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/scenario")
 public class ScenarioSourceController {
     private static final Logger logger = LogManager.getLogger(ScenarioSourceController.class);
     private final ScenarioSourceQueueHandler sourceQueueHandler;
@@ -20,7 +19,7 @@ public class ScenarioSourceController {
         this.sourceQueueHandler = sourceQueueHandler;
     }
 
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/api/scenario/add")
     public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario) {
         if (scenario == null) {
             logger.warn("Scenario is null");
@@ -32,7 +31,7 @@ public class ScenarioSourceController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/get-scenario")
+    @GetMapping("/internal/scenario/get-scenario")
     private Optional<Scenario> getScenario() {
         try {
             return sourceQueueHandler.takeScenario();

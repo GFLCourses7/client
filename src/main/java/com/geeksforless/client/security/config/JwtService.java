@@ -22,14 +22,17 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
-    @Value("${application.security.jwt.expiration}")
-    private long jwtExpiration;
+
+    private final String secretKey;
+    private final long jwtExpiration;
     private final TokenRepository tokenRepository;
 
-    public JwtService(TokenRepository tokenRepository) {
+    public JwtService(TokenRepository tokenRepository,
+                      @Value("${application.security.jwt.expiration}") long jwtExpiration,
+                      @Value("${application.security.jwt.secret-key}") String secretKey) {
         this.tokenRepository = tokenRepository;
+        this.secretKey = secretKey;
+        this.jwtExpiration = jwtExpiration;
     }
 
     public String extractUsername(String token) {
@@ -65,7 +68,7 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    protected boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -82,14 +85,13 @@ public class JwtService {
                 .getBody();
     }
 
-    private Key getSignInKey() {
+    protected Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
 
     public void saveUserToken(User user, String jwtToken) {
-
         Token token = new Token(
                 jwtToken,
                 TokenType.BEARER,
