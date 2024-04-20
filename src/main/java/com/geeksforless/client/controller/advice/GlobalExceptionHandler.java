@@ -1,5 +1,7 @@
 package com.geeksforless.client.controller.advice;
 
+import com.geeksforless.client.exception.ScenarioNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,5 +31,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {UsernameNotFoundException.class})
     public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         return ResponseEntity.badRequest().body("User name not found ");
+    }
+    @ExceptionHandler(value = {ScenarioNotFoundException.class})
+    public ResponseEntity<String> handleScenarioNotFoundException(ScenarioNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

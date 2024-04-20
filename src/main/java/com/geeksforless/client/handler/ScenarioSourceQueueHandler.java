@@ -1,6 +1,7 @@
 package com.geeksforless.client.handler;
 
 import com.geeksforless.client.model.Scenario;
+import com.geeksforless.client.model.ScenarioDto;
 import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.User;
 
@@ -12,6 +13,8 @@ public interface ScenarioSourceQueueHandler {
     void addScenario(Scenario scenario);
 
     Optional<Scenario> takeScenario() throws InterruptedException;
+
+    ScenarioDto updateScenario(ScenarioDto scenarioDto);
 
     Scenario saveScenario(Scenario scenario);
 
