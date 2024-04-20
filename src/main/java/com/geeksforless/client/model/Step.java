@@ -27,7 +27,12 @@ public class Step {
         this.id = id;
         this.action = action;
         this.value = value;
-                this.scenario = scenario;
+        this.scenario = scenario;
+    }
+
+    public Step(String action, String value) {
+        this.action = action;
+        this.value = value;
     }
 
     public Long getId() {
