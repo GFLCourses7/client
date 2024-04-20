@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +83,7 @@ public class UserServiceTest {
 
         when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> userService.addScenario(scenario, userName));
+        assertThrows(UsernameNotFoundException.class, () -> userService.addScenario(scenario, userName));
     }
 
     @Test
@@ -115,6 +116,6 @@ public class UserServiceTest {
         String userName = "nonExistingUser";
         when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> userService.getResult(userName));
+        assertThrows(UsernameNotFoundException.class, () -> userService.getResult(userName));
     }
 }

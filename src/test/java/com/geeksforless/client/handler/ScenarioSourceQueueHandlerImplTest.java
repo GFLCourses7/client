@@ -105,15 +105,17 @@ public class ScenarioSourceQueueHandlerImplTest {
     void saveScenario_ValidScenarioWithSteps_SavesScenarioAndSteps() {
         Scenario scenario = new Scenario();
         List<Step> steps = new ArrayList<>();
-        steps.add(new Step("action1", "value1"));
-        steps.add(new Step("action2", "value2"));
+        steps.add(new Step());
+        steps.add(new Step());
         scenario.setSteps(steps);
         when(scenarioRepository.save(scenario)).thenReturn(scenario);
+        when(stepService.addStep(any(Step.class))).thenReturn(new Step());
 
         Scenario result = queueHandler.saveScenario(scenario);
 
         assertEquals(scenario, result);
         verify(stepService, times(2)).addStep(any(Step.class));
+        assertEquals(steps.size(), result.getSteps().size());
     }
 
     @Test
