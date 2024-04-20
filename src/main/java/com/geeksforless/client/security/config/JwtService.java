@@ -32,7 +32,6 @@ public class JwtService {
         this.tokenRepository = tokenRepository;
     }
 
-
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }

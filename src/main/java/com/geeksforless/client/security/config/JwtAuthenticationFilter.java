@@ -37,15 +37,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().contains("/api/auth") || request.getServletPath().contains("/h2-console/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new JwtException("Incorrect auth header");
+            filterChain.doFilter(request, response);
+            return;
         }
         jwt = authHeader.substring(7);
         username = jwtService.extractUsername(jwt);

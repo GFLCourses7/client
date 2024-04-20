@@ -22,7 +22,6 @@ public class ScenarioSourceController {
 
     @PostMapping(value = "/add")
     public ResponseEntity<?> addScenario(@Valid @RequestBody Scenario scenario) {
-//        System.out.println(request.isUserInRole("ROLE_USER"));
         if (scenario == null) {
             logger.warn("Scenario is null");
             return ResponseEntity.badRequest().build();
