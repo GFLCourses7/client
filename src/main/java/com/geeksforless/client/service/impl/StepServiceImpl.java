@@ -16,7 +16,7 @@ public class StepServiceImpl implements StepService {
 
     @Override
     @Transactional
-    public void addStep(Step step) {
-        stepRepository.save(step);
+    public Step addStep(Step step) {
+        return stepRepository.save(step);
     }
 }

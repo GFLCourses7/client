@@ -48,7 +48,8 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
         if (stepList != null && !stepList.isEmpty()) {
             for (Step step : stepList) {
                 if (step != null) {
-                    stepService.addStep(step);
+                    step = stepService.addStep(step);
+                    step.setScenario(scenario);
                 } else {
                     logger.warn("Null step found while saving scenario: {}", scenario.getName());
                 }

@@ -8,6 +8,7 @@ import com.geeksforless.client.repository.UserRepository;
 import com.geeksforless.client.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,12 +42,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addScenario(Scenario scenario, String userName) {
         Optional<User> userOptional = getUserByUserName(userName);
-        Scenario savedScenario = scenarioQueueHandler.saveScenario(scenario);
 
         if (userOptional.isEmpty()) {
             logger.error("User with username '{}' not found", userName);
-            throw new IllegalArgumentException("User not found with username: " + userName);
+            throw new UsernameNotFoundException("User not found with username: " + userName);
         }
+        Scenario savedScenario = scenarioQueueHandler.saveScenario(scenario);
 
         User user = userOptional.get();
 
@@ -65,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
         if (userOptional.isEmpty()) {
             logger.error("User with username '{}' not found", userName);
-            throw new IllegalArgumentException("User not found with username: " + userName);
+            throw new UsernameNotFoundException("User not found with username: " + userName);
         }
 
         User user = userOptional.get();

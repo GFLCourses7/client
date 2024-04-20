@@ -82,7 +82,7 @@ public class UserApiControllerTest {
 
         ResponseEntity<List<ScenarioInfo>> responseEntity = userApiController.getResult();
 
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         verify(userService, never()).getResult(any());
     }
 }
