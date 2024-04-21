@@ -6,6 +6,7 @@ import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +25,15 @@ public class ApplicationConfig {
     private static final Logger logger = LogManager.getLogger(ApplicationConfig.class);
     private final UserRepository userRepository;
 
-    public ApplicationConfig(UserRepository userRepository) {
+    private final String WORKER_NAME;
+    private final String WORKER_PASSWORD;
+
+    public ApplicationConfig(UserRepository userRepository,
+                             @Value("${worker.name}") String workerName,
+                             @Value("${worker.password}") String workerPassword) {
         this.userRepository = userRepository;
+        WORKER_NAME = workerName;
+        WORKER_PASSWORD = workerPassword;
     }
 
     @Bean
@@ -53,13 +61,15 @@ public class ApplicationConfig {
 
     @Bean
     public CommandLineRunner addWorkerIfNotExists() {
+        System.out.println(WORKER_NAME + " " + WORKER_PASSWORD);
         return args -> userRepository.findWorker()
-                .ifPresentOrElse(worker -> {},
+                .ifPresentOrElse(worker -> {
+                        },
                         () -> {
                             logger.info("Adding worker to DB");
                             User newWorker = new User();
-                            newWorker.setUserName("${worker.name}");
-                            newWorker.setPassWord(passwordEncoder().encode("${worker.password}"));
+                            newWorker.setUserName(WORKER_NAME);
+                            newWorker.setPassWord(passwordEncoder().encode(WORKER_PASSWORD));
                             newWorker.setRole(Role.WORKER);
                             userRepository.save(newWorker);
                         }
