@@ -42,17 +42,17 @@ public class WorkerController {
     @GetMapping("/get-proxy")
     public ResponseEntity<ProxyConfigHolder> getProxy() {
         logger.info("client requesting proxy");
-        return ResponseEntity.ok(proxySourceQueueHandler.getProxy());
+        return ResponseEntity.ok(Optional.ofNullable(proxySourceQueueHandler.getProxy())
+                .orElse(new ProxyConfigHolder())
+        );
     }
 
     @GetMapping("/get-scenario")
     public ResponseEntity<ScenarioDto> getScenario() {
         logger.info("client requesting scenarios");
-        Optional<Scenario> scenarioOptional = scenarioSourceQueueHandler.takeScenario();
-        return scenarioOptional.map(
-                scenario -> ResponseEntity.ok(scenarioMapper.toDto(scenario))
-        ).orElse(
-                ResponseEntity.ok(null)
+        return ResponseEntity.ok(scenarioSourceQueueHandler.takeScenario()
+                .map(scenarioMapper::toDto)
+                .orElse(new ScenarioDto())
         );
     }
 }

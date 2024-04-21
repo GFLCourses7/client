@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class ScenarioMapper {
@@ -24,7 +25,13 @@ public class ScenarioMapper {
         scenarioDto.setName(scenario.getName());
         scenarioDto.setSite(scenario.getSite());
         scenarioDto.setResult(scenario.getResult());
-        scenarioDto.setSteps(scenario.getSteps().stream().map(stepMapper::toDto).toList());
+        scenarioDto.setSteps(
+                Optional.ofNullable(scenario.getSteps())
+                        .orElse(new ArrayList<>())
+                        .stream()
+                        .map(stepMapper::toDto)
+                        .toList()
+        );
 
         return scenarioDto;
     }
