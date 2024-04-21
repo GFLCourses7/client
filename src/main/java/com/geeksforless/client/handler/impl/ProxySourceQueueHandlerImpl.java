@@ -20,9 +20,12 @@ public class ProxySourceQueueHandlerImpl implements ProxySourceQueueHandler {
     }
 
     @Override
-    public ProxyConfigHolder getProxy() throws InterruptedException {
-        ProxyConfigHolder proxy = proxyQueue.take();
-        LOGGER.info("Retrieved proxy from the queue: {}", proxy.toString());
+    public ProxyConfigHolder getProxy() {
+        ProxyConfigHolder proxy = proxyQueue.poll();
+        if (proxy != null)
+            LOGGER.info("Retrieved proxy from the queue: {}", proxy.toString());
+        else
+            LOGGER.info("Proxy queue is empty, retrieve null");
         return proxy;
     }
 

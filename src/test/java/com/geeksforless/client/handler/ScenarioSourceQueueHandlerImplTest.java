@@ -2,6 +2,7 @@ package com.geeksforless.client.handler;
 
 import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.handler.impl.ScenarioSourceQueueHandlerImpl;
+import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.Step;
@@ -36,6 +37,9 @@ public class ScenarioSourceQueueHandlerImplTest {
 
     @Mock
     private ScenarioRepository scenarioRepository;
+
+    @Mock
+    private ScenarioMapper scenarioMapper;
 
     @Test
     void addScenario_SuccessfullyAdded() {
@@ -81,6 +85,8 @@ public class ScenarioSourceQueueHandlerImplTest {
 
         when(scenarioRepository.findById(scenarioDto.getId())).thenReturn(of(scenario));
         when(scenarioRepository.save(any(Scenario.class))).thenReturn(scenario);
+
+        when(scenarioMapper.toDto(any())).thenReturn(scenarioDto);
 
         ScenarioDto updatedScenarioDto = queueHandler.updateScenario(scenarioDto);
 
