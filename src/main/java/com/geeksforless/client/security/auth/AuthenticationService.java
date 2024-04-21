@@ -1,6 +1,6 @@
 package com.geeksforless.client.security.auth;
 
-
+import com.geeksforless.client.exceptions.UsernameIsAlreadyExist;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
@@ -12,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -33,10 +32,10 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public void register(AuthRequest request) {
+    public User register(AuthRequest request) {
         Optional<User> optionalUser = userRepository.findByUserName(request.getLogin());
         if (optionalUser.isPresent()) {
-            throw new UsernameNotFoundException("Username " + request.getLogin() + " already exists");
+            throw new UsernameIsAlreadyExist("Username " + request.getLogin() + " already exists");
         }
 
         User user = new User(
@@ -44,8 +43,7 @@ public class AuthenticationService {
                 passwordEncoder.encode(request.getPassword()),
                 Role.USER
         );
-
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public AuthResponse authenticate(AuthRequest request) {
