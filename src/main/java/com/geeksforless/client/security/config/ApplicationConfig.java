@@ -1,6 +1,9 @@
 package com.geeksforless.client.security.config;
 
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
@@ -61,7 +64,6 @@ public class ApplicationConfig {
 
     @Bean
     public CommandLineRunner addWorkerIfNotExists() {
-        System.out.println(WORKER_NAME + " " + WORKER_PASSWORD);
         return args -> userRepository.findWorker()
                 .ifPresentOrElse(worker -> {
                         },
@@ -74,5 +76,19 @@ public class ApplicationConfig {
                             userRepository.save(newWorker);
                         }
                 );
+    }
+
+    @Bean
+    public ObjectMapper getObjectMapperBean() {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+
+        return mapper;
     }
 }

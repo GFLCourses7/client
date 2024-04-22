@@ -1,64 +1,63 @@
 package com.geeksforless.client.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geeksforless.client.model.ProxyConfigHolder;
 import com.geeksforless.client.model.ProxyCredentials;
 import com.geeksforless.client.model.ProxyNetworkConfig;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 
 public class ProxySourceServiceFileTest {
 
-    private final String FILE = "ProxyConfigHolder_test.json";
+    @Mock
+    private ObjectMapper objectMapper;
 
-    @Test
-    public void testGetProxies1() {
+    private ProxySourceServiceFile proxySourceServiceFile;
 
-        ProxySourceServiceFile proxySourceServiceFile = new ProxySourceServiceFile(new JsonConfigReader(), FILE);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        String FILE = "ProxyConfigHolder_test.json";
+        proxySourceServiceFile = new ProxySourceServiceFile(FILE, objectMapper);
 
-        int expected = 4;
-        int actual = proxySourceServiceFile.getProxies().size();
-
-        assertEquals(expected, actual);
     }
 
     @Test
-    public void testGetProxy2() {
+    public void testGetProxies() throws IOException {
+        ProxyConfigHolder proxyConfigHolder = createProxyConfigHolder();
 
-        String hostname = "hostname1";
+        when(objectMapper.readValue(any(byte[].class), eq(ProxyConfigHolder[].class)))
+                .thenReturn(new ProxyConfigHolder[]{proxyConfigHolder});
+
+        List<ProxyConfigHolder> proxies = proxySourceServiceFile.getProxies();
+
+        assertEquals(1, proxies.size());
+        assertNotNull(proxies);
+        assertEquals(List.of(proxyConfigHolder), proxies);
+    }
+
+    private static ProxyConfigHolder createProxyConfigHolder() {
+        String hostname = "hostname";
         Integer port = 8080;
-        String username = "username1";
-        String password = "password1";
+        String username = "username";
+        String password = "password";
 
         ProxyNetworkConfig proxyNetworkConfig = new ProxyNetworkConfig(hostname, port);
         ProxyCredentials proxyCredentials = new ProxyCredentials(username, password);
 
-        ProxySourceServiceFile proxySourceServiceFile = new ProxySourceServiceFile(new JsonConfigReader(), FILE);
 
-        ProxyConfigHolder expected = new ProxyConfigHolder(proxyNetworkConfig, proxyCredentials);
-        ProxyConfigHolder actual = proxySourceServiceFile.getProxies().get(0);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetProxies3() {
-
-        String hostname = "hostname3";
-        Integer port = 8080;
-        String username = "username3";
-        String password = "password3";
-
-        ProxyNetworkConfig proxyNetworkConfig = new ProxyNetworkConfig(hostname, port);
-        ProxyCredentials proxyCredentials = new ProxyCredentials(username, password);
-
-        ProxySourceServiceFile proxySourceServiceFile = new ProxySourceServiceFile(new JsonConfigReader(), FILE);
-
-        ProxyConfigHolder expected = new ProxyConfigHolder(proxyNetworkConfig, proxyCredentials);
-        ProxyConfigHolder actual = proxySourceServiceFile.getProxies().get(2);
-
-        assertEquals(expected, actual);
+        return new ProxyConfigHolder(proxyNetworkConfig, proxyCredentials);
     }
 }
