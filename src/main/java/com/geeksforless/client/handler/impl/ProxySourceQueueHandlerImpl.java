@@ -16,7 +16,7 @@ public class ProxySourceQueueHandlerImpl implements ProxySourceQueueHandler {
     @Override
     public void addProxy(ProxyConfigHolder proxyConfigHolder) {
         proxyQueue.add(proxyConfigHolder);
-        LOGGER.info("Added proxy to the queue: {}", proxyConfigHolder.toString());
+        LOGGER.trace("Added proxy to the queue: {}", proxyConfigHolder.toString());
     }
 
     @Override

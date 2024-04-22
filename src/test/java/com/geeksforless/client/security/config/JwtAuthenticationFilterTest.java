@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.enums.Role;
+import com.geeksforless.client.repository.TokenRepository;
 import com.geeksforless.client.repository.UserRepository;
 import com.geeksforless.client.security.auth.dto.Token;
-import com.geeksforless.client.repository.TokenRepository;
 import io.jsonwebtoken.MalformedJwtException;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,8 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import java.util.Map;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -57,10 +58,10 @@ public class JwtAuthenticationFilterTest {
         String token = jwtService.generateToken(user);
         Token userToken = new Token(token, null, false, false, user);
 
-        Mockito.when(tokenRepository.findByToken(token)).thenReturn(java.util.Optional.of(userToken));
-        Mockito.when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
+        when(tokenRepository.findByToken(token)).thenReturn(java.util.Optional.of(userToken));
+        when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/scenario/add")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/add-scenario")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isBadRequest());
     }
@@ -76,11 +77,11 @@ public class JwtAuthenticationFilterTest {
         String token = jwtService.generateToken(user);
         Token userToken = new Token(token, null, false, false, user);
 
-        Mockito.when(tokenRepository.findByToken(token)).thenReturn(java.util.Optional.of(userToken));
-        Mockito.when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
-        Mockito.when(sourceQueueHandler.takeScenario()).thenReturn(null);
+        when(tokenRepository.findByToken(token)).thenReturn(java.util.Optional.of(userToken));
+        when(userRepository.findByUserName(user.getUsername())).thenReturn(Optional.of(user));
+        when(sourceQueueHandler.takeScenario()).thenReturn(Optional.empty());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/internal/scenario/get-scenario")
+        mockMvc.perform(MockMvcRequestBuilders.get("/internal/get-scenario")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
@@ -89,7 +90,7 @@ public class JwtAuthenticationFilterTest {
     public void testJwtAuthenticationFilter_InvalidToken() {
         String invalidToken = "invalid.Token.test";
 
-        assertThrows(MalformedJwtException.class, ()-> mockMvc.perform(MockMvcRequestBuilders.get("/")
+        assertThrows(MalformedJwtException.class, () -> mockMvc.perform(MockMvcRequestBuilders.get("/")
                         .header("Authorization", "Bearer " + invalidToken))
                 .andReturn());
     }
@@ -113,6 +114,7 @@ public class JwtAuthenticationFilterTest {
                 .andExpect(status().isOk());
 
     }
+
     @Test
     @WithMockUser(username = "testUser")
     public void testJwtAuthenticationFilter_Logout() throws Exception {
