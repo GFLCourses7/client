@@ -2,6 +2,7 @@ package com.geeksforless.client.handler.impl;
 
 import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
+import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.ScenarioDto;
 import com.geeksforless.client.repository.ScenarioRepository;
@@ -24,11 +25,15 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
 
     private final ScenarioRepository scenarioRepository;
     private final StepService stepService;
+    private final ScenarioMapper scenarioMapper;
     private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
 
-    public ScenarioSourceQueueHandlerImpl(ScenarioRepository scenarioRepository, StepService stepService) {
+    public ScenarioSourceQueueHandlerImpl(ScenarioRepository scenarioRepository,
+                                          StepService stepService,
+                                          ScenarioMapper scenarioMapper) {
         this.scenarioRepository = scenarioRepository;
         this.stepService = stepService;
+        this.scenarioMapper = scenarioMapper;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
 
             logger.info("Result of scenario " + scenario.getName() + " was saved");
             Scenario updated = scenarioRepository.save(scenario);
-            return updated.toDto();
+            return scenarioMapper.toDto(updated);
         }
         logger.error("Scenario with id " + scenarioDto.getId() + " not found.");
         throw new ScenarioNotFoundException("Scenario with id " + scenarioDto.getId() + " not found.");
@@ -64,6 +69,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     }
 
     @Override
+    @Transactional
     public Scenario saveScenario(Scenario scenario) {
         List<Step> stepList = scenario.getSteps();
         if (stepList != null && !stepList.isEmpty()) {

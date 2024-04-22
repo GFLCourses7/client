@@ -12,7 +12,7 @@ public interface ScenarioSourceQueueHandler {
 
     void addScenario(Scenario scenario);
 
-    Optional<Scenario> takeScenario() throws InterruptedException;
+    Optional<Scenario> takeScenario();
 
     ScenarioDto updateScenario(ScenarioDto scenarioDto);
 
