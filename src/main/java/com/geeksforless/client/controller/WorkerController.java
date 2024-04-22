@@ -33,7 +33,7 @@ public class WorkerController {
 
     @PostMapping("/set-result")
     public ResponseEntity<?> setResult(@Valid @RequestBody ScenarioDto scenarioDto) {
-        logger.info("client sending result");
+        logger.info("worker sending result");
         logger.info("Scenario " + scenarioDto.getName() + " going to updated");
         scenarioSourceQueueHandler.updateScenario(scenarioDto);
         return ResponseEntity.ok().build();
