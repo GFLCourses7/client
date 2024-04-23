@@ -1,7 +1,7 @@
 package com.geeksforless.client.mapper;
 
 import com.geeksforless.client.model.Step;
-import com.geeksforless.client.model.StepDto;
+import com.geeksforless.client.model.dto.StepDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,4 +30,11 @@ public class StepMapperTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    void testToStep() {
+        StepDto stepDto = new StepDto("action", "value");
+        Step expected = new Step("action", "value");
+        Step actual = stepMapper.toStep(stepDto);
+        assertEquals(expected, actual);
+    }
 }

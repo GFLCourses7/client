@@ -3,8 +3,11 @@ package com.geeksforless.client.controller;
 import com.geeksforless.client.handler.ProxySourceQueueHandler;
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.mapper.ScenarioMapper;
-import com.geeksforless.client.mapper.StepMapper;
 import com.geeksforless.client.model.*;
+import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.dto.StepDto;
+import com.geeksforless.client.model.projections.ScenarioInfo;
+import com.geeksforless.client.model.projections.StepInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +22,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,19 +47,47 @@ class WorkerControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    private static ScenarioInfo getScenarioInfo() {
+        return new ScenarioInfo() {
+            @Override
+            public Long getId() {
+                return 0L;
+            }
+
+            @Override
+            public String getName() {
+                return "test scenario";
+            }
+
+            @Override
+            public String getSite() {
+                return "";
+            }
+
+            @Override
+            public String getResult() {
+                return "Success";
+            }
+
+            @Override
+            public List<StepInfo> getSteps() {
+                return List.of();
+            }
+        };
+    }
+
     @Test
     public void testSetResult_Success() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        when(scenarioSourceQueueHandler.updateScenario(any(ScenarioDto.class))).thenReturn(new ScenarioDto());
+        when(scenarioSourceQueueHandler.updateScenario(any(ScenarioInfo.class))).thenReturn(new ScenarioDto());
 
         ScenarioDto fakeScenario = new ScenarioDto();
-        fakeScenario.setId(1L);
         fakeScenario.setName("test scenario");
         fakeScenario.setResult("Success");
 
-        ResponseEntity<?> responseEntity = workerController.setResult(fakeScenario);
+        ResponseEntity<?> responseEntity = workerController.setResult(getScenarioInfo());
         int responseCode = responseEntity.getStatusCode().value();
 
         assertEquals(HttpStatus.OK.value(), responseCode);

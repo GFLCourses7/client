@@ -2,7 +2,6 @@ package com.geeksforless.client.service.impl;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.model.Scenario;
-import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.repository.UserRepository;
 import com.geeksforless.client.service.UserService;
@@ -61,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ScenarioInfo> getResult(String userName) {
+    public List<Scenario> getResult(String userName) {
         Optional<User> userOptional = getUserByUserName(userName);
 
         if (userOptional.isEmpty()) {
@@ -70,6 +69,6 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userOptional.get();
-        return scenarioQueueHandler.getScenarioInfoByUser(user);
+        return scenarioQueueHandler.getScenarioByUser(user);
     }
 }

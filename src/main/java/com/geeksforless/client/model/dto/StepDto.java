@@ -1,4 +1,4 @@
-package com.geeksforless.client.model;
+package com.geeksforless.client.model.dto;
 
 import java.util.Objects;
 

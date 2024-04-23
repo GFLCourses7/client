@@ -1,11 +1,10 @@
-package com.geeksforless.client.model;
+package com.geeksforless.client.model.dto;
 
 import java.util.List;
 import java.util.Objects;
 
 public class ScenarioDto {
 
-    private Long id;
 
     private String name;
 
@@ -18,20 +17,11 @@ public class ScenarioDto {
     public ScenarioDto() {
     }
 
-    public ScenarioDto(Long id, String name, String site, String result, List<StepDto> steps) {
-        this.id = id;
+    public ScenarioDto(String name, String site, String result, List<StepDto> steps) {
         this.name = name;
         this.site = site;
         this.result = result;
         this.steps = steps;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -71,19 +61,18 @@ public class ScenarioDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScenarioDto that = (ScenarioDto) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(site, that.site) && Objects.equals(result, that.result) && Objects.equals(steps, that.steps);
+        return Objects.equals(name, that.name) && Objects.equals(site, that.site) && Objects.equals(result, that.result) && Objects.equals(steps, that.steps);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, site, result, steps);
+        return Objects.hash(name, site, result, steps);
     }
 
     @Override
     public String toString() {
         return "ScenarioDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", site='" + site + '\'' +
                 ", result='" + result + '\'' +
                 ", steps=" + steps +

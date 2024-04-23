@@ -4,27 +4,26 @@ import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.handler.impl.ScenarioSourceQueueHandlerImpl;
 import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
-import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.Step;
 import com.geeksforless.client.model.User;
+import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.projections.ScenarioInfo;
+import com.geeksforless.client.model.projections.StepInfo;
 import com.geeksforless.client.repository.ScenarioRepository;
 import com.geeksforless.client.service.StepService;
-import com.geeksforless.client.model.ScenarioDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static java.util.Optional.of;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ScenarioSourceQueueHandlerImplTest {
@@ -33,13 +32,43 @@ public class ScenarioSourceQueueHandlerImplTest {
     private ScenarioSourceQueueHandlerImpl queueHandler;
 
     @Mock
-    StepService stepService;
+    private StepService stepService;
 
     @Mock
     private ScenarioRepository scenarioRepository;
 
     @Mock
     private ScenarioMapper scenarioMapper;
+
+    private static ScenarioInfo getScenarioInfo() {
+        return new ScenarioInfo() {
+            @Override
+            public Long getId() {
+                return 0L;
+            }
+
+            @Override
+            public String getName() {
+                return "Test";
+            }
+
+            @Override
+            public String getSite() {
+                return "";
+            }
+
+            @Override
+            public String getResult() {
+                return "Success";
+            }
+
+            @Override
+            public List<StepInfo> getSteps() {
+                return List.of();
+            }
+        };
+    }
+
 
     @Test
     void addScenario_SuccessfullyAdded() {
@@ -72,23 +101,22 @@ public class ScenarioSourceQueueHandlerImplTest {
     @Test
     public void testUpdateScenario_Success() {
         ScenarioDto scenarioDto = new ScenarioDto();
-        scenarioDto.setId(1L);
         scenarioDto.setName("Test");
         scenarioDto.setResult("Success");
 
         Scenario scenario = new Scenario();
-        scenario.setId(1L);
+        scenario.setId(0L);
         scenario.setName("Test Scenario");
         scenario.setResult("Initial");
         scenario.setDone(false);
 
 
-        when(scenarioRepository.findById(scenarioDto.getId())).thenReturn(of(scenario));
+        when(scenarioRepository.findById(getScenarioInfo().getId())).thenReturn(of(scenario));
         when(scenarioRepository.save(any(Scenario.class))).thenReturn(scenario);
 
         when(scenarioMapper.toDto(any())).thenReturn(scenarioDto);
 
-        ScenarioDto updatedScenarioDto = queueHandler.updateScenario(scenarioDto);
+        ScenarioDto updatedScenarioDto = queueHandler.updateScenario(getScenarioInfo());
 
         assertEquals(scenarioDto.getResult(), updatedScenarioDto.getResult());
         assertTrue(scenario.isDone());
@@ -97,13 +125,10 @@ public class ScenarioSourceQueueHandlerImplTest {
     @Test
     public void testUpdateScenario_ScenarioNotFound() {
 
-        ScenarioDto scenarioDto = new ScenarioDto();
-        scenarioDto.setId(1L);
-
-        when(scenarioRepository.findById(1L)).thenReturn(Optional.empty());
+        when(scenarioRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ScenarioNotFoundException.class, () -> {
-            queueHandler.updateScenario(scenarioDto);
+            queueHandler.updateScenario(getScenarioInfo());
         });
     }
 
@@ -139,11 +164,11 @@ public class ScenarioSourceQueueHandlerImplTest {
     @Test
     void getScenarioInfoByUser_UserExists_ReturnsListOfScenarioInfo() {
         User user = new User();
-        List<ScenarioInfo> scenarioInfos = new ArrayList<>();
-        when(scenarioRepository.findByUser(user)).thenReturn(scenarioInfos);
+        List<Scenario> scenarios = new ArrayList<>();
+        when(scenarioRepository.findByUser(any(User.class))).thenReturn(new ArrayList<>());
 
-        List<ScenarioInfo> result = queueHandler.getScenarioInfoByUser(user);
+        List<Scenario> result = queueHandler.getScenarioByUser(user);
 
-        assertEquals(scenarioInfos, result);
+        assertEquals(scenarios, result);
     }
 }

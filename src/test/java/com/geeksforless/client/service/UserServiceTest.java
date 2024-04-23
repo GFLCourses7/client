@@ -1,9 +1,10 @@
 package com.geeksforless.client.service;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
+import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
-import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.User;
+import com.geeksforless.client.model.dto.ScenarioDto;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
 import com.geeksforless.client.service.impl.UserServiceImpl;
@@ -30,6 +31,9 @@ public class UserServiceTest {
 
     @Mock
     private ScenarioSourceQueueHandler scenarioQueueHandler;
+
+    @Mock
+    private ScenarioMapper scenarioMapper;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -90,25 +94,14 @@ public class UserServiceTest {
     void getResult_UserExists_ReturnsListOfScenarioInfo() {
         User user = new User("testUser", "password", Role.USER);
         when(userRepository.findByUserName("testUser")).thenReturn(Optional.of(user));
-        List<ScenarioInfo> scenarioInfos = new ArrayList<>();
-        when(scenarioQueueHandler.getScenarioInfoByUser(user)).thenReturn(scenarioInfos);
+        List<ScenarioDto> scenarioDtos = new ArrayList<>();
+        when(scenarioQueueHandler.getScenarioByUser(user)).thenReturn(new ArrayList<>());
 
-        List<ScenarioInfo> result = userService.getResult("testUser");
+        List<ScenarioDto> result = userService.getResult("testUser")
+                .stream().map(scenarioMapper::toDto)
+                .toList();
 
-        assertEquals(scenarioInfos, result);
-    }
-
-    @Test
-    public void testGetResult() {
-        String userName = "testUser";
-        User user = new User(userName, "pass", Role.USER);
-        when(userRepository.findByUserName(userName)).thenReturn(Optional.of(user));
-        List<ScenarioInfo> scenarioInfos = new ArrayList<>();
-        when(scenarioQueueHandler.getScenarioInfoByUser(user)).thenReturn(scenarioInfos);
-
-        List<ScenarioInfo> result = userService.getResult("testUser");
-
-        assertEquals(scenarioInfos, result);
+        assertEquals(scenarioDtos, result);
     }
 
     @Test
