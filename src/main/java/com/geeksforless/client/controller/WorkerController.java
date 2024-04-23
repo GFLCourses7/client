@@ -5,6 +5,8 @@ import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.ProxyConfigHolder;
 import com.geeksforless.client.model.Scenario;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
+import com.geeksforless.client.model.dto.ScenarioDtoInternal;
 import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.repository.ScenarioRepository;
 import jakarta.validation.Valid;
@@ -24,19 +26,17 @@ public class WorkerController {
     private final ScenarioSourceQueueHandler scenarioSourceQueueHandler;
     private final ProxySourceQueueHandler proxySourceQueueHandler;
     private final ScenarioMapper scenarioMapper;
-    private final ScenarioRepository scenarioRepository;
 
     public WorkerController(ScenarioSourceQueueHandler scenarioSourceQueueHandler,
                             ProxySourceQueueHandler proxySourceQueueHandler,
-                            ScenarioMapper scenarioMapper1, ScenarioRepository scenarioRepository) {
+                            ScenarioMapper scenarioMapper) {
         this.scenarioSourceQueueHandler = scenarioSourceQueueHandler;
         this.proxySourceQueueHandler = proxySourceQueueHandler;
-        this.scenarioMapper = scenarioMapper1;
-        this.scenarioRepository = scenarioRepository;
+        this.scenarioMapper = scenarioMapper;
     }
 
     @PostMapping("/set-result")
-    public ResponseEntity<?> setResult(@Valid @RequestBody ScenarioInfo scenarioDto) {
+    public ResponseEntity<?> setResult(@Valid @RequestBody ScenarioDtoInternal scenarioDto) {
         logger.info("Worker sending result");
         logger.info("Scenario {} going to updated", scenarioDto.getName());
         scenarioSourceQueueHandler.updateScenario(scenarioDto);
@@ -51,25 +51,23 @@ public class WorkerController {
         );
     }
 
-//    @GetMapping("/get-scenario")
-//    public ResponseEntity<ScenarioDto> getScenario() {
-//        logger.info("client requesting scenarios");
-//        return ResponseEntity.ok(scenarioSourceQueueHandler.takeScenario()
-//                .map(scenarioMapper::toDto)
-//                .orElse(new ScenarioDto())
-//        );
-//    }
+    @GetMapping("/get-scenario")
+    public ResponseEntity<ScenarioDtoExternal> getScenario() {
+        logger.info("client requesting scenario");
+        return ResponseEntity.ok(scenarioSourceQueueHandler.takeScenario()
+                .map(scenarioMapper::toDtoExternal)
+                .orElse(new ScenarioDtoExternal())
+        );
+    }
 
     @GetMapping("/get-scenarios")
-    public ResponseEntity<List<ScenarioInfo>> getScenarios() {
+    public ResponseEntity<List<ScenarioDtoInternal>> getScenarios() {
         logger.info("Client requesting scenarios");
 
         List<Scenario> scenarios = scenarioSourceQueueHandler.takeScenarios();
+        if (scenarios.isEmpty())
+            return ResponseEntity.ok(List.of(new ScenarioDtoInternal()));
 
-        List<ScenarioInfo> list = scenarios.stream()
-                .map(scenario -> scenarioRepository.findScenarioInfoById(scenario.getId()))
-                .toList();
-
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(scenarios.stream().map(scenarioMapper::toDtoInternal).toList());
     }
 }

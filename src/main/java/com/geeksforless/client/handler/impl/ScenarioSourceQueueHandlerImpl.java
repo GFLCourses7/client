@@ -6,7 +6,8 @@ import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.Step;
 import com.geeksforless.client.model.User;
-import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
+import com.geeksforless.client.model.dto.ScenarioDtoInternal;
 import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.repository.ScenarioRepository;
 import com.geeksforless.client.service.StepService;
@@ -72,7 +73,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
 
     @Override
     @Transactional
-    public ScenarioDto updateScenario(ScenarioInfo scenarioInfo) {
+    public ScenarioDtoExternal updateScenario(ScenarioDtoInternal scenarioInfo) {
         Optional<Scenario> optionalScenario = scenarioRepository.findById(scenarioInfo.getId());
 
         if (optionalScenario.isPresent()) {
@@ -82,7 +83,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
 
             logger.info("Result of scenario {} was saved", scenario.getName());
             Scenario updated = scenarioRepository.save(scenario);
-            return scenarioMapper.toDto(updated);
+            return scenarioMapper.toDtoExternal(updated);
         }
         logger.error("Scenario with id {} not found.", scenarioInfo.getId());
         throw new ScenarioNotFoundException("Scenario with id " + scenarioInfo.getId() + " not found.");

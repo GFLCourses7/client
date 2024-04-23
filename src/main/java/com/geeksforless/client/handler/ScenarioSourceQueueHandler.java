@@ -2,7 +2,8 @@ package com.geeksforless.client.handler;
 
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.User;
-import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
+import com.geeksforless.client.model.dto.ScenarioDtoInternal;
 import com.geeksforless.client.model.projections.ScenarioInfo;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface ScenarioSourceQueueHandler {
     Optional<Scenario> takeScenario();
     List<Scenario> takeScenarios();
 
-    ScenarioDto updateScenario(ScenarioInfo scenarioInfo);
+    ScenarioDtoExternal updateScenario(ScenarioDtoInternal scenarioInfo);
 
     Scenario saveScenario(Scenario scenario);
 

@@ -6,7 +6,8 @@ import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.Step;
 import com.geeksforless.client.model.User;
-import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
+import com.geeksforless.client.model.dto.ScenarioDtoInternal;
 import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.projections.StepInfo;
 import com.geeksforless.client.repository.ScenarioRepository;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -100,7 +102,7 @@ public class ScenarioSourceQueueHandlerImplTest {
 
     @Test
     public void testUpdateScenario_Success() {
-        ScenarioDto scenarioDto = new ScenarioDto();
+        ScenarioDtoExternal scenarioDto = new ScenarioDtoExternal();
         scenarioDto.setName("Test");
         scenarioDto.setResult("Success");
 
@@ -114,9 +116,15 @@ public class ScenarioSourceQueueHandlerImplTest {
         when(scenarioRepository.findById(getScenarioInfo().getId())).thenReturn(of(scenario));
         when(scenarioRepository.save(any(Scenario.class))).thenReturn(scenario);
 
-        when(scenarioMapper.toDto(any())).thenReturn(scenarioDto);
+        when(scenarioMapper.toDtoExternal(any())).thenReturn(scenarioDto);
 
-        ScenarioDto updatedScenarioDto = queueHandler.updateScenario(getScenarioInfo());
+        ScenarioDtoExternal updatedScenarioDto = queueHandler.updateScenario(new ScenarioDtoInternal(
+                0L,
+                "Test",
+                "site",
+                "Success",
+                null
+        ));
 
         assertEquals(scenarioDto.getResult(), updatedScenarioDto.getResult());
         assertTrue(scenario.isDone());
@@ -128,7 +136,7 @@ public class ScenarioSourceQueueHandlerImplTest {
         when(scenarioRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ScenarioNotFoundException.class, () -> {
-            queueHandler.updateScenario(getScenarioInfo());
+            queueHandler.updateScenario(new ScenarioDtoInternal(1L, null, null, null, null));
         });
     }
 

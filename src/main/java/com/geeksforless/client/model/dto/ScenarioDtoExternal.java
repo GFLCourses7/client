@@ -3,7 +3,7 @@ package com.geeksforless.client.model.dto;
 import java.util.List;
 import java.util.Objects;
 
-public class ScenarioDto {
+public class ScenarioDtoExternal {
 
 
     private String name;
@@ -12,12 +12,12 @@ public class ScenarioDto {
 
     private String result;
 
-    private List<StepDto> steps;
+    private List<StepDtoExternal> steps;
 
-    public ScenarioDto() {
+    public ScenarioDtoExternal() {
     }
 
-    public ScenarioDto(String name, String site, String result, List<StepDto> steps) {
+    public ScenarioDtoExternal(String name, String site, String result, List<StepDtoExternal> steps) {
         this.name = name;
         this.site = site;
         this.result = result;
@@ -48,11 +48,11 @@ public class ScenarioDto {
         this.result = result;
     }
 
-    public List<StepDto> getSteps() {
+    public List<StepDtoExternal> getSteps() {
         return steps;
     }
 
-    public void setSteps(List<StepDto> steps) {
+    public void setSteps(List<StepDtoExternal> steps) {
         this.steps = steps;
     }
 
@@ -60,7 +60,7 @@ public class ScenarioDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ScenarioDto that = (ScenarioDto) o;
+        ScenarioDtoExternal that = (ScenarioDtoExternal) o;
         return Objects.equals(name, that.name) && Objects.equals(site, that.site) && Objects.equals(result, that.result) && Objects.equals(steps, that.steps);
     }
 

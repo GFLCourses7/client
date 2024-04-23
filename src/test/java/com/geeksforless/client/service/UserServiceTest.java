@@ -4,7 +4,7 @@ import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.User;
-import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
 import com.geeksforless.client.service.impl.UserServiceImpl;
@@ -94,11 +94,11 @@ public class UserServiceTest {
     void getResult_UserExists_ReturnsListOfScenarioInfo() {
         User user = new User("testUser", "password", Role.USER);
         when(userRepository.findByUserName("testUser")).thenReturn(Optional.of(user));
-        List<ScenarioDto> scenarioDtos = new ArrayList<>();
+        List<ScenarioDtoExternal> scenarioDtos = new ArrayList<>();
         when(scenarioQueueHandler.getScenarioByUser(user)).thenReturn(new ArrayList<>());
 
-        List<ScenarioDto> result = userService.getResult("testUser")
-                .stream().map(scenarioMapper::toDto)
+        List<ScenarioDtoExternal> result = userService.getResult("testUser")
+                .stream().map(scenarioMapper::toDtoExternal)
                 .toList();
 
         assertEquals(scenarioDtos, result);

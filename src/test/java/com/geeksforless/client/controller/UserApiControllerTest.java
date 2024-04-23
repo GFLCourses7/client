@@ -2,7 +2,7 @@ package com.geeksforless.client.controller;
 
 import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
-import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ public class UserApiControllerTest {
     @Test
     void addScenario_ValidScenario_ReturnsOk() {
         Scenario scenario = new Scenario();
-        ScenarioDto scenarioDto = new ScenarioDto();
+        ScenarioDtoExternal scenarioDto = new ScenarioDtoExternal();
         UserDetails userDetails = User.withUsername("testUser")
                 .password("testPassword")
                 .roles("USER")
@@ -47,12 +47,12 @@ public class UserApiControllerTest {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
-        when(scenarioMapper.toScenario(any(ScenarioDto.class))).thenReturn(scenario);
+        when(scenarioMapper.toScenario(any(ScenarioDtoExternal.class))).thenReturn(scenario);
 
         ResponseEntity<?> responseEntity = userApiController.addScenario(scenarioDto);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(scenarioMapper, times(1)).toScenario(any(ScenarioDto.class));
+        verify(scenarioMapper, times(1)).toScenario(any(ScenarioDtoExternal.class));
         verify(userService, times(1)).addScenario(scenario, "testUser");
     }
 
@@ -66,9 +66,9 @@ public class UserApiControllerTest {
 
     @Test
     void getResult_AuthenticatedUser_ReturnsListOfScenarioDTO() {
-        ScenarioDto dto = new ScenarioDto();
+        ScenarioDtoExternal dto = new ScenarioDtoExternal();
         dto.setName("name");
-        List<ScenarioDto> scenarioDtoList = new ArrayList<>(List.of(dto));
+        List<ScenarioDtoExternal> scenarioDtoList = new ArrayList<>(List.of(dto));
 
         Scenario scenario = new Scenario();
         scenario.setName(dto.getName());
@@ -80,14 +80,14 @@ public class UserApiControllerTest {
                 .roles("USER")
                 .build();
 
-        when(scenarioMapper.toDto(any(Scenario.class))).thenReturn(dto);
+        when(scenarioMapper.toDtoExternal(any(Scenario.class))).thenReturn(dto);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        ResponseEntity<List<ScenarioDto>> responseEntity = userApiController.getResult();
+        ResponseEntity<List<ScenarioDtoExternal>> responseEntity = userApiController.getResult();
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(scenarioDtoList, responseEntity.getBody());
@@ -97,7 +97,7 @@ public class UserApiControllerTest {
     void getResult_UnauthenticatedUser_ReturnsNotFound() {
         SecurityContextHolder.clearContext();
 
-        ResponseEntity<List<ScenarioDto>> responseEntity = userApiController.getResult();
+        ResponseEntity<List<ScenarioDtoExternal>> responseEntity = userApiController.getResult();
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         verify(userService, never()).getResult(any());

@@ -1,7 +1,7 @@
 package com.geeksforless.client.controller;
 
 import com.geeksforless.client.mapper.ScenarioMapper;
-import com.geeksforless.client.model.dto.ScenarioDto;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.service.UserService;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +28,7 @@ public class UserApiController {
     }
 
     @PostMapping("/add-scenario")
-    public ResponseEntity<?> addScenario(@Valid @RequestBody ScenarioDto scenarioDto) {
+    public ResponseEntity<?> addScenario(@Valid @RequestBody ScenarioDtoExternal scenarioDto) {
         if (scenarioDto == null) {
             logger.warn("Scenario is null");
             return ResponseEntity.badRequest().build();
@@ -46,16 +46,16 @@ public class UserApiController {
     }
 
     @GetMapping("/get-result")
-    public ResponseEntity<List<ScenarioDto>> getResult() {
+    public ResponseEntity<List<ScenarioDtoExternal>> getResult() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             String userName = userDetails.getUsername();
             logger.info("Fetching results for user: {}", userName);
 
 
-            List<ScenarioDto> result = userService.getResult(userName)
+            List<ScenarioDtoExternal> result = userService.getResult(userName)
                     .stream()
-                    .map(scenarioMapper::toDto)
+                    .map(scenarioMapper::toDtoExternal)
                     .toList();
 
             if (!result.isEmpty()) {
