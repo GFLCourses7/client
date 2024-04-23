@@ -17,7 +17,7 @@ public class Scenario {
     private String name;
     @Column(name = "site")
     private String site;
-    @Column(name = "result")
+    @Column(name = "result", length = 16384)
     private String result;
     @Column(name = "is_done")
     private boolean isDone;
@@ -102,12 +102,12 @@ public class Scenario {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Scenario scenario = (Scenario) o;
-        return isDone == scenario.isDone && Objects.equals(id, scenario.id) && Objects.equals(name, scenario.name) && Objects.equals(site, scenario.site) && Objects.equals(result, scenario.result) && Objects.equals(user, scenario.user) && Objects.equals(steps, scenario.steps);
+        return isDone == scenario.isDone && Objects.equals(id, scenario.id) && Objects.equals(name, scenario.name) && Objects.equals(site, scenario.site) && Objects.equals(result, scenario.result) && Objects.equals(steps, scenario.steps);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, site, result, isDone, user, steps);
+        return Objects.hash(id, name, site, result, isDone, steps);
     }
 
     @Override
@@ -122,11 +122,5 @@ public class Scenario {
                 ", steps=" + steps +
                 '}';
     }
-    public ScenarioDto toDto() {
-        return new ScenarioDto(this.getId(),
-                this.getName(),
-                this.getSite(),
-                this.getResult(),
-                this.getSteps());
-    }
+
 }

@@ -16,7 +16,7 @@ public class JsonConfigReader {
     private static final Logger LOGGER = LogManager.getLogger(JsonConfigReader.class.getName());
 
     public <T> List<T> readFile(byte[] configFile, Class<T> valueType) {
-        LOGGER.info("Reading config file: " + new String(configFile));
+        LOGGER.info("Reading config file");
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 

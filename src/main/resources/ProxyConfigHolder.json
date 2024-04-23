@@ -1,7 +1,7 @@
 [
   {
     "proxyNetworkConfig": {
-      "hostname": "138.36.95.102",
+      "hostname": "166.1.15.224",
       "port": 50100
     },
     "proxyCredentials": {
@@ -10,7 +10,7 @@
     }
   },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -19,7 +19,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -28,7 +28,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -37,7 +37,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -46,7 +46,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -55,7 +55,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -64,7 +64,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -73,7 +73,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -82,7 +82,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -91,7 +91,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -100,7 +100,7 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -109,7 +109,16 @@
   }
 },{
   "proxyNetworkConfig": {
-    "hostname": "138.36.95.102",
+    "hostname": "166.1.15.224",
+    "port": 50100
+  },
+  "proxyCredentials": {
+    "username": "denyslviv2013",
+    "password": "REtsLkZs2I"
+  }
+},{
+  "proxyNetworkConfig": {
+    "hostname": "166.1.15.224",
     "port": 50100
   },
   "proxyCredentials": {
@@ -117,4 +126,5 @@
     "password": "REtsLkZs2I"
   }
 }
+
 ]

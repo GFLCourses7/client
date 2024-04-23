@@ -13,12 +13,12 @@ public class ScenarioDto {
 
     private String result;
 
-    private List<Step> steps;
+    private List<StepDto> steps;
 
     public ScenarioDto() {
     }
 
-    public ScenarioDto(Long id, String name, String site, String result, List<Step> steps) {
+    public ScenarioDto(Long id, String name, String site, String result, List<StepDto> steps) {
         this.id = id;
         this.name = name;
         this.site = site;
@@ -58,11 +58,11 @@ public class ScenarioDto {
         this.result = result;
     }
 
-    public List<Step> getSteps() {
+    public List<StepDto> getSteps() {
         return steps;
     }
 
-    public void setSteps(List<Step> steps) {
+    public void setSteps(List<StepDto> steps) {
         this.steps = steps;
     }
 
