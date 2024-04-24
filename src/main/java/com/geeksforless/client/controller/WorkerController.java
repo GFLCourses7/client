@@ -7,8 +7,6 @@ import com.geeksforless.client.model.ProxyConfigHolder;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.model.dto.ScenarioDtoInternal;
-import com.geeksforless.client.model.projections.ScenarioInfo;
-import com.geeksforless.client.repository.ScenarioRepository;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

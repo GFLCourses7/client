@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         saveUser(user);
 
         scenarioQueueHandler.addScenario(savedScenario);
-        logger.info("Scenario {} saved and added to the queue", savedScenario.getName());
+        logger.info("Scenario \"{}\" saved and added to the queue", savedScenario.getName());
     }
 
     @Override
