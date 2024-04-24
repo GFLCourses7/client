@@ -3,6 +3,7 @@ package com.geeksforless.client.controller.advice;
 import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.exception.UsernameIsAlreadyExist;
 import com.geeksforless.client.exception.error.ApiError;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -32,17 +33,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return apiError;
     }
 
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers,
             HttpStatusCode status,
             WebRequest request) {
+
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("Validation error");
         apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
         apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
+
         return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(value = {ConstraintViolationException.class})
+    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
+        return buildResponseEntity(badRequestApiError(ex));
     }
 
     @ExceptionHandler(value = {UsernameIsAlreadyExist.class})
