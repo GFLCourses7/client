@@ -4,17 +4,18 @@ import com.geeksforless.client.exception.ScenarioNotFoundException;
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
 import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
-import com.geeksforless.client.model.ScenarioDto;
-import com.geeksforless.client.repository.ScenarioRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.Step;
 import com.geeksforless.client.model.User;
+import com.geeksforless.client.model.dto.ScenarioDtoExternal;
+import com.geeksforless.client.model.dto.ScenarioDtoInternal;import com.geeksforless.client.repository.ScenarioRepository;
 import com.geeksforless.client.service.StepService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,13 +28,16 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     private final StepService stepService;
     private final ScenarioMapper scenarioMapper;
     private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
+    private Integer batchSize;
 
     public ScenarioSourceQueueHandlerImpl(ScenarioRepository scenarioRepository,
                                           StepService stepService,
-                                          ScenarioMapper scenarioMapper) {
+                                          ScenarioMapper scenarioMapper,
+                                          @Value("${scenario.queue.batch.size}") Integer batchSize) {
         this.scenarioRepository = scenarioRepository;
         this.stepService = stepService;
         this.scenarioMapper = scenarioMapper;
+        this.batchSize = batchSize;
     }
 
     @Override
@@ -47,21 +51,45 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     }
 
     @Override
+    public synchronized List<Scenario> takeScenarios() {
+        logger.trace("Scenarios in queue: {}", queue.size());
+        List<Scenario> scenarios = new LinkedList<>();
+        if (queue.size() <= batchSize) {
+            while (!queue.isEmpty() && queue.size() < batchSize) {
+                Scenario poll = queue.poll();
+                if (poll != null) {
+                    scenarios.add(poll);
+                }
+            }
+        } else {
+            while (batchSize > 0 && !queue.isEmpty()) {
+                Scenario poll = queue.poll();
+                if (poll != null) {
+                    scenarios.add(poll);
+                }
+                batchSize--;
+            }
+        }
+        logger.trace("Sending {} scenarios. Scenarios in queue left: {}", scenarios.size(), queue.size());
+        return scenarios;
+    }
+
+    @Override
     @Transactional
-    public ScenarioDto updateScenario(ScenarioDto scenarioDto) {
-        Optional<Scenario> optionalScenario = scenarioRepository.findById(scenarioDto.getId());
+    public ScenarioDtoExternal updateScenario(ScenarioDtoInternal scenarioInfo) {
+        Optional<Scenario> optionalScenario = scenarioRepository.findById(scenarioInfo.getId());
 
         if (optionalScenario.isPresent()) {
             Scenario scenario = optionalScenario.get();
-            scenario.setResult(scenarioDto.getResult());
+            scenario.setResult(scenarioInfo.getResult());
             scenario.setDone(true);
 
-            logger.info("Result of scenario " + scenario.getName() + " was saved");
+            logger.info("Result of scenario {} was saved", scenario.getName());
             Scenario updated = scenarioRepository.save(scenario);
-            return scenarioMapper.toDto(updated);
+            return scenarioMapper.toDtoExternal(updated);
         }
-        logger.error("Scenario with id " + scenarioDto.getId() + " not found.");
-        throw new ScenarioNotFoundException("Scenario with id " + scenarioDto.getId() + " not found.");
+        logger.error("Scenario with id {} not found.", scenarioInfo.getId());
+        throw new ScenarioNotFoundException("Scenario with id " + scenarioInfo.getId() + " not found.");
     }
 
     public LinkedBlockingQueue<Scenario> getQueue() {
@@ -86,7 +114,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     }
 
     @Override
-    public List<ScenarioInfo> getScenarioInfoByUser(User user) {
+    public List<Scenario> getScenarioByUser(User user) {
         return scenarioRepository.findByUser(user);
     }
 }

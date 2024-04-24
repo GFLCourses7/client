@@ -1,7 +1,8 @@
 package com.geeksforless.client.mapper;
 
 import com.geeksforless.client.model.Step;
-import com.geeksforless.client.model.StepDto;
+import com.geeksforless.client.model.dto.StepDtoExternal;
+import com.geeksforless.client.model.dto.StepDtoInternal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,14 +21,43 @@ public class StepMapperTest {
     }
 
     @Test
-    public void testToDto() {
+    public void testToDtoExternal() {
 
         Step step = new Step("action", "value");
 
-        StepDto expected = new StepDto("action", "value");
-        StepDto actual = stepMapper.toDto(step);
+        StepDtoExternal expected = new StepDtoExternal("action", "value");
+        StepDtoExternal actual = stepMapper.toDtoExternal(step);
 
         assertEquals(expected, actual);
     }
 
+    @Test
+    void testExternalToStep() {
+        StepDtoExternal stepDto = new StepDtoExternal("action", "value");
+        Step expected = new Step("action", "value");
+        Step actual = stepMapper.toStep(stepDto);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testToDtoInternal() {
+
+        Step step = new Step("action", "value");
+        step.setId(1L);
+
+        StepDtoInternal expected = new StepDtoInternal(1L, "action", "value");
+
+        StepDtoInternal actual = stepMapper.toDtoInternal(step);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testInternalToStep() {
+        StepDtoInternal stepDto = new StepDtoInternal(1L, "action", "value");
+        Step expected = new Step("action", "value");
+        expected.setId(1L);
+        Step actual = stepMapper.toStep(stepDto);
+        assertEquals(expected, actual);
+    }
 }
