@@ -1,4 +1,4 @@
-package com.geeksforless.client.service;
+package com.geeksforless.client.service.proxysource;
 
 import com.geeksforless.client.model.ProxyConfigHolder;
 

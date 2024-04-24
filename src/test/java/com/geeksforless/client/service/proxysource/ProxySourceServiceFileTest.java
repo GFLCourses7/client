@@ -1,9 +1,11 @@
-package com.geeksforless.client.service;
+package com.geeksforless.client.service.proxysource;
 
 import com.geeksforless.client.model.ProxyConfigHolder;
 import com.geeksforless.client.model.ProxyCredentials;
 import com.geeksforless.client.model.ProxyNetworkConfig;
 
+import com.geeksforless.client.service.JsonConfigReader;
+import com.geeksforless.client.service.proxysource.ProxySourceServiceFile;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

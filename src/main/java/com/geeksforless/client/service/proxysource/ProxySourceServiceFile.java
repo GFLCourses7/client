@@ -1,6 +1,7 @@
-package com.geeksforless.client.service;
+package com.geeksforless.client.service.proxysource;
 
 import com.geeksforless.client.model.ProxyConfigHolder;
+import com.geeksforless.client.service.JsonConfigReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
