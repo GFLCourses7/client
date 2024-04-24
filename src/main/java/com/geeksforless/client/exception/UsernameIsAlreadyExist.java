@@ -1,4 +1,4 @@
-package com.geeksforless.client.exceptions;
+package com.geeksforless.client.exception;
 
 public class UsernameIsAlreadyExist extends RuntimeException {
 
