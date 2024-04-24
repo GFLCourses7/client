@@ -37,6 +37,7 @@ public class ProxySourceServiceUrlTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+
     }
 
     @Test
