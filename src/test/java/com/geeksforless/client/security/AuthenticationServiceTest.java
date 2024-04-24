@@ -1,6 +1,6 @@
 package com.geeksforless.client.security;
 
-import com.geeksforless.client.exceptions.UsernameIsAlreadyExist;
+import com.geeksforless.client.exception.UsernameIsAlreadyExist;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
@@ -10,8 +10,6 @@ import com.geeksforless.client.security.auth.dto.AuthResponse;
 import com.geeksforless.client.security.config.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
