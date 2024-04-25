@@ -25,8 +25,6 @@ public class ProxySourceServiceFileTest {
 
     @Mock
     private ObjectMapper objectMapper;
-    @Mock
-    private ProxyValidationService proxyValidationService;
 
     @InjectMocks
     private ProxySourceServiceFile proxySourceServiceFile;
@@ -35,7 +33,7 @@ public class ProxySourceServiceFileTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         String FILE = "ProxyConfigHolder_test.json";
-        proxySourceServiceFile = new ProxySourceServiceFile(FILE, objectMapper, proxyValidationService);
+        proxySourceServiceFile = new ProxySourceServiceFile(FILE, objectMapper);
     }
 
     @Test
@@ -49,7 +47,6 @@ public class ProxySourceServiceFileTest {
 
         when(objectMapper.readValue(any(byte[].class), any(TypeReference.class)))
                 .thenReturn(proxyConfigHolders);
-        when(proxyValidationService.isValid(any())).thenReturn(true);
 
         List<ProxyConfigHolder> proxies = proxySourceServiceFile.getProxies();
 

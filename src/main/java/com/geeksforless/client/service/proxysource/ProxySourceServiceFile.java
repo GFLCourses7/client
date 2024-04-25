@@ -23,16 +23,12 @@ public class ProxySourceServiceFile implements ProxySourceService {
 
     private final ObjectMapper objectMapper;
 
-    private final ProxyValidationService proxyValidationService;
-
     public ProxySourceServiceFile(
             @Value("${client.proxy.file}") String PROXY_CONFIG_HOLDER_JSON,
-            ObjectMapper objectMapper,
-            ProxyValidationService proxyValidationService
+            ObjectMapper objectMapper
     ) {
         this.PROXY_CONFIG_HOLDER_JSON = PROXY_CONFIG_HOLDER_JSON;
         this.objectMapper = objectMapper;
-        this.proxyValidationService = proxyValidationService;
     }
 
     @Override
@@ -51,6 +47,6 @@ public class ProxySourceServiceFile implements ProxySourceService {
         } catch (IOException e) {
             LOGGER.error(e);
         }
-        return proxyConfigHolders.stream().filter(proxyValidationService::isValid).toList();
+        return proxyConfigHolders;
     }
 }
