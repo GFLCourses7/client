@@ -8,8 +8,6 @@ import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.model.dto.ScenarioDtoInternal;
 import com.geeksforless.client.model.dto.StepDtoExternal;
 import com.geeksforless.client.model.dto.StepDtoInternal;
-import com.geeksforless.client.model.projections.ScenarioInfo;
-import com.geeksforless.client.model.projections.StepInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -48,35 +46,6 @@ class WorkerControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    private static ScenarioInfo getScenarioInfo() {
-        return new ScenarioInfo() {
-            @Override
-            public Long getId() {
-                return 0L;
-            }
-
-            @Override
-            public String getName() {
-                return "test scenario";
-            }
-
-            @Override
-            public String getSite() {
-                return "";
-            }
-
-            @Override
-            public String getResult() {
-                return "Success";
-            }
-
-            @Override
-            public List<StepInfo> getSteps() {
-                return List.of();
-            }
-        };
     }
 
     @Test

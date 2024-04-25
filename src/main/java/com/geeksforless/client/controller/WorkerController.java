@@ -33,7 +33,7 @@ public class WorkerController {
         this.scenarioMapper = scenarioMapper;
     }
 
-    @PostMapping("/set-result")
+    @PostMapping("/result")
     public ResponseEntity<?> setResult(@Valid @RequestBody ScenarioDtoInternal scenarioDto) {
         logger.info("Worker sending result");
         logger.info("Scenario {} going to updated", scenarioDto.getName());
@@ -41,7 +41,7 @@ public class WorkerController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/get-proxy")
+    @GetMapping("/proxy")
     public ResponseEntity<ProxyConfigHolder> getProxy() {
         logger.info("client requesting proxy");
         return ResponseEntity.ok(Optional.ofNullable(proxySourceQueueHandler.getProxy())
@@ -49,7 +49,7 @@ public class WorkerController {
         );
     }
 
-    @GetMapping("/get-scenario")
+    @GetMapping("/scenario")
     public ResponseEntity<ScenarioDtoExternal> getScenario() {
         logger.info("client requesting scenario");
         return ResponseEntity.ok(scenarioSourceQueueHandler.takeScenario()
@@ -58,7 +58,7 @@ public class WorkerController {
         );
     }
 
-    @GetMapping("/get-scenarios")
+    @GetMapping("/scenarios")
     public ResponseEntity<List<ScenarioDtoInternal>> getScenarios() {
         logger.info("Client requesting scenarios");
 
