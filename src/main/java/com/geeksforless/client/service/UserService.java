@@ -1,7 +1,6 @@
 package com.geeksforless.client.service;
 
 import com.geeksforless.client.model.Scenario;
-import com.geeksforless.client.model.projections.ScenarioInfo;
 import com.geeksforless.client.model.User;
 
 import java.util.List;
@@ -14,5 +13,5 @@ public interface UserService {
 
         void addScenario(Scenario scenario, String userName);
 
-        List<ScenarioInfo> getResult(String userName);
+        List<Scenario> getResult(String userName);
 }

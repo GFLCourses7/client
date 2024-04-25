@@ -1,6 +1,6 @@
 package com.geeksforless.client.security.auth;
 
-import com.geeksforless.client.exceptions.UsernameIsAlreadyExist;
+import com.geeksforless.client.exception.UsernameIsAlreadyExist;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
@@ -35,7 +35,7 @@ public class AuthenticationService {
     public User register(AuthRequest request) {
         Optional<User> optionalUser = userRepository.findByUserName(request.getLogin());
         if (optionalUser.isPresent()) {
-            throw new UsernameIsAlreadyExist("Username " + request.getLogin() + " already exists");
+            throw new UsernameIsAlreadyExist("Username \"" + request.getLogin() + "\" already exists.");
         }
 
         User user = new User(

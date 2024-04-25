@@ -1,18 +1,30 @@
-package com.geeksforless.client.model;
+package com.geeksforless.client.model.dto;
 
 import java.util.Objects;
 
-public class StepDto {
+public class StepDtoInternal {
+
+    private Long id;
 
     private String action;
+
     private String value;
 
-    public StepDto() {
+    public StepDtoInternal() {
     }
 
-    public StepDto(String action, String value) {
+    public StepDtoInternal(Long id, String action, String value) {
+        this.id = id;
         this.action = action;
         this.value = value;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getAction() {
@@ -35,19 +47,20 @@ public class StepDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StepDto stepDto = (StepDto) o;
-        return Objects.equals(action, stepDto.action) && Objects.equals(value, stepDto.value);
+        StepDtoInternal that = (StepDtoInternal) o;
+        return Objects.equals(id, that.id) && Objects.equals(action, that.action) && Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(action, value);
+        return Objects.hash(id, action, value);
     }
 
     @Override
     public String toString() {
-        return "StepDto{" +
-                "action='" + action + '\'' +
+        return "StepDtoInternal{" +
+                "id=" + id +
+                ", action='" + action + '\'' +
                 ", value='" + value + '\'' +
                 '}';
     }

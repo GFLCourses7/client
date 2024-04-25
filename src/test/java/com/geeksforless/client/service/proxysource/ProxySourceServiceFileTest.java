@@ -1,4 +1,4 @@
-package com.geeksforless.client.service;
+package com.geeksforless.client.service.proxysource;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

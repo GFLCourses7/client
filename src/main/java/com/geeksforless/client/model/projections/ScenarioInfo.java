@@ -1,7 +1,6 @@
 package com.geeksforless.client.model.projections;
 
 import com.geeksforless.client.model.Scenario;
-import com.geeksforless.client.model.projections.StepInfo;
 
 import java.util.List;
 
@@ -9,6 +8,8 @@ import java.util.List;
  * Projection for {@link Scenario}
  */
 public interface ScenarioInfo {
+    Long getId();
+
     String getName();
 
     String getSite();
