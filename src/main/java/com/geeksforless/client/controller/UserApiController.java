@@ -27,7 +27,7 @@ public class UserApiController {
         this.scenarioMapper = scenarioMapper;
     }
 
-    @PostMapping("/add-scenario")
+    @PostMapping("/scenario")
     public ResponseEntity<?> addScenario(@Valid @RequestBody ScenarioDtoExternal scenarioDto) {
         if (scenarioDto == null) {
             logger.warn("Scenario is null");
@@ -45,15 +45,14 @@ public class UserApiController {
         }
     }
 
-    @GetMapping("/get-result")
-    public ResponseEntity<List<ScenarioDtoExternal>> getResult() {
+    @GetMapping("/results")
+    public ResponseEntity<List<ScenarioDtoExternal>> getResults() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             String userName = userDetails.getUsername();
             logger.info("Fetching results for user: {}", userName);
 
-
-            List<ScenarioDtoExternal> result = userService.getResult(userName)
+            List<ScenarioDtoExternal> result = userService.getResults(userName)
                     .stream()
                     .map(scenarioMapper::toDtoExternal)
                     .toList();

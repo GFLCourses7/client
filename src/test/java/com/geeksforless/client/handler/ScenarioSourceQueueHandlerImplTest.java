@@ -8,8 +8,6 @@ import com.geeksforless.client.model.Step;
 import com.geeksforless.client.model.User;
 import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.model.dto.ScenarioDtoInternal;
-import com.geeksforless.client.model.projections.ScenarioInfo;
-import com.geeksforless.client.model.projections.StepInfo;
 import com.geeksforless.client.repository.ScenarioRepository;
 import com.geeksforless.client.service.StepService;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,36 +38,6 @@ public class ScenarioSourceQueueHandlerImplTest {
 
     @Mock
     private ScenarioMapper scenarioMapper;
-
-    private static ScenarioInfo getScenarioInfo() {
-        return new ScenarioInfo() {
-            @Override
-            public Long getId() {
-                return 0L;
-            }
-
-            @Override
-            public String getName() {
-                return "Test";
-            }
-
-            @Override
-            public String getSite() {
-                return "";
-            }
-
-            @Override
-            public String getResult() {
-                return "Success";
-            }
-
-            @Override
-            public List<StepInfo> getSteps() {
-                return List.of();
-            }
-        };
-    }
-
 
     @Test
     void addScenario_SuccessfullyAdded() {
@@ -113,7 +80,7 @@ public class ScenarioSourceQueueHandlerImplTest {
         scenario.setDone(false);
 
 
-        when(scenarioRepository.findById(getScenarioInfo().getId())).thenReturn(of(scenario));
+        when(scenarioRepository.findById(0L)).thenReturn(of(scenario));
         when(scenarioRepository.save(any(Scenario.class))).thenReturn(scenario);
 
         when(scenarioMapper.toDtoExternal(any())).thenReturn(scenarioDto);
@@ -170,12 +137,12 @@ public class ScenarioSourceQueueHandlerImplTest {
     }
 
     @Test
-    void getScenarioInfoByUser_UserExists_ReturnsListOfScenarioInfo() {
+    void getScenariosByUser_UserExists_ReturnsListOfScenarios() {
         User user = new User();
         List<Scenario> scenarios = new ArrayList<>();
         when(scenarioRepository.findByUser(any(User.class))).thenReturn(new ArrayList<>());
 
-        List<Scenario> result = queueHandler.getScenarioByUser(user);
+        List<Scenario> result = queueHandler.getScenariosByUser(user);
 
         assertEquals(scenarios, result);
     }

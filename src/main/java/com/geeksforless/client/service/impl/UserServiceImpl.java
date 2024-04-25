@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Scenario> getResult(String userName) {
+    public List<Scenario> getResults(String userName) {
         Optional<User> userOptional = getUserByUserName(userName);
 
         if (userOptional.isEmpty()) {
@@ -69,6 +69,6 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userOptional.get();
-        return scenarioQueueHandler.getScenarioByUser(user);
+        return scenarioQueueHandler.getScenariosByUser(user);
     }
 }
