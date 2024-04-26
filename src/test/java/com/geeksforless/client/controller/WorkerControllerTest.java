@@ -8,6 +8,8 @@ import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.model.dto.ScenarioDtoInternal;
 import com.geeksforless.client.model.dto.StepDtoExternal;
 import com.geeksforless.client.model.dto.StepDtoInternal;
+import com.geeksforless.client.model.dto.factory.ScenarioDtoFactory;
+import com.geeksforless.client.model.factory.ProxyConfigHolderFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,12 +42,24 @@ class WorkerControllerTest {
     @Mock
     private ScenarioMapper scenarioMapper;
 
+    @Mock
+    private ScenarioDtoFactory scenarioDtoFactory;
+
+    @Mock
+    private ProxyConfigHolderFactory proxyConfigHolderFactory;
+
     @InjectMocks
     private WorkerController workerController;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(scenarioDtoFactory.createInternalEmpty()).thenReturn(new ScenarioDtoInternal());
+        when(scenarioDtoFactory.createExternalEmpty()).thenReturn(new ScenarioDtoExternal());
+        when(proxyConfigHolderFactory.createEmpty()).thenReturn(new ProxyConfigHolder(
+           new ProxyNetworkConfig(),
+           new ProxyCredentials()
+        ));
     }
 
     @Test
