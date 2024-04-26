@@ -17,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.IntStream;
 
 @Service
 public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandler {
@@ -28,7 +30,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     private final StepService stepService;
     private final ScenarioMapper scenarioMapper;
     private final LinkedBlockingQueue<Scenario> queue = new LinkedBlockingQueue<>();
-    private Integer batchSize;
+    private final Integer batchSize;
 
     public ScenarioSourceQueueHandlerImpl(ScenarioRepository scenarioRepository,
                                           StepService stepService,
@@ -54,22 +56,9 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     public synchronized List<Scenario> takeScenarios() {
         logger.trace("Scenarios in queue: {}", queue.size());
         List<Scenario> scenarios = new LinkedList<>();
-        if (queue.size() <= batchSize) {
-            while (!queue.isEmpty() && queue.size() < batchSize) {
-                Scenario poll = queue.poll();
-                if (poll != null) {
-                    scenarios.add(poll);
-                }
-            }
-        } else {
-            while (batchSize > 0 && !queue.isEmpty()) {
-                Scenario poll = queue.poll();
-                if (poll != null) {
-                    scenarios.add(poll);
-                }
-                batchSize--;
-            }
-        }
+
+        IntStream.range(0, batchSize).mapToObj((ignore)->queue.poll()).filter(Objects::nonNull).forEach(scenarios::add);
+
         logger.trace("Sending {} scenarios. Scenarios in queue left: {}", scenarios.size(), queue.size());
         return scenarios;
     }

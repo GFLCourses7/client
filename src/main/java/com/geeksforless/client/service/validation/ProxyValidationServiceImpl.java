@@ -69,6 +69,8 @@ public class ProxyValidationServiceImpl implements ProxyValidationService {
         client.setConnectTimeout(1, TimeUnit.SECONDS);
         client.setReadTimeout(1, TimeUnit.SECONDS);
         response = client.newCall(createRequest()).execute();
+        // Close connection
+        response.body().close();
     }
 
     public void setResponse(Response response) {
