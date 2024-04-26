@@ -36,9 +36,9 @@ public class ProxySourceQueueHandlerImpl implements ProxySourceQueueHandler {
     public ProxyConfigHolder getProxy() {
         ProxyConfigHolder proxy = proxyQueue.poll();
         if (proxy != null)
-            LOGGER.info("Retrieved proxy from the queue: {}", proxy.toString());
+            LOGGER.trace("Retrieved proxy from the queue: {}", proxy.toString());
         else
-            LOGGER.info("Proxy queue is empty, retrieve null");
+            LOGGER.trace("Proxy queue is empty, retrieve null");
         return proxy;
     }
 
