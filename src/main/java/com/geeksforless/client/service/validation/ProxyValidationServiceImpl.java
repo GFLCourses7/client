@@ -1,6 +1,7 @@
 package com.geeksforless.client.service.validation;
 
 import com.geeksforless.client.model.ProxyConfigHolder;
+import com.geeksforless.client.security.config.OkHttpBeanFactory;
 import com.squareup.okhttp.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,9 +17,14 @@ public class ProxyValidationServiceImpl implements ProxyValidationService {
 
     private static final Logger logger = LogManager.getLogger(ProxyValidationServiceImpl.class);
 
-    @Value("${client.proxy.validation.url}")
-    private String validationUrl;
+    private final OkHttpBeanFactory okHttpBeanFactory;
+    private final String validationUrl;
     private Response response;
+
+    public ProxyValidationServiceImpl(OkHttpBeanFactory okHttpBeanFactory, @Value("${client.proxy.validation.url}") String validationUrl) {
+        this.okHttpBeanFactory = okHttpBeanFactory;
+        this.validationUrl = validationUrl;
+    }
 
     @Override
     public boolean isValid(ProxyConfigHolder configHolder) {
@@ -63,11 +69,15 @@ public class ProxyValidationServiceImpl implements ProxyValidationService {
                 return response.request().newBuilder().header("Proxy-Authorization",credentials).build();
             }
         };
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = okHttpBeanFactory.getObject();
+        if (client == null) {
+            logger.error("OkHttpClient Bean could not be initialized");
+            throw new RuntimeException();
+        }
         client.setProxy(proxy);
         client.setAuthenticator(proxyAuthenticator);
-        client.setConnectTimeout(1, TimeUnit.SECONDS);
-        client.setReadTimeout(1, TimeUnit.SECONDS);
+        client.setConnectTimeout(30, TimeUnit.SECONDS);
+        client.setReadTimeout(30, TimeUnit.SECONDS);
         response = client.newCall(createRequest()).execute();
         // Close connection
         response.body().close();

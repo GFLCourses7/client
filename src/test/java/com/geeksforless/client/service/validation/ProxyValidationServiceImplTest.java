@@ -3,6 +3,8 @@ package com.geeksforless.client.service.validation;
 import com.geeksforless.client.model.ProxyConfigHolder;
 import com.geeksforless.client.model.ProxyCredentials;
 import com.geeksforless.client.model.ProxyNetworkConfig;
+import com.geeksforless.client.security.config.OkHttpBeanFactory;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,14 +21,17 @@ public class ProxyValidationServiceImplTest {
     @Mock
     private Response mockResponse;
 
+    @Mock
+    private OkHttpBeanFactory okHttpBeanFactory;
+
     @InjectMocks
     private ProxyValidationServiceImpl proxyValidationService;
 
     @Test
-    public void isValid_WithValidProxy_ReturnsTrue() {
+    public void isValid_WithValidProxy_ReturnsTrue() throws Exception {
         ProxyConfigHolder configHolder = new ProxyConfigHolder(new ProxyNetworkConfig("example.com", 8080), new ProxyCredentials());
         when(mockResponse.isSuccessful()).thenReturn(true);
-        proxyValidationService = new ProxyValidationServiceImpl() {
+        proxyValidationService = new ProxyValidationServiceImpl(okHttpBeanFactory, "validationUrl") {
             void createResponse(ProxyConfigHolder configHolder) {
                 setResponse(mockResponse);
             }
@@ -36,10 +41,10 @@ public class ProxyValidationServiceImplTest {
     }
 
     @Test
-    public void isNotValid_WithInvalidProxy_ReturnsFalse() {
+    public void isNotValid_WithInvalidProxy_ReturnsFalse() throws Exception {
         ProxyConfigHolder configHolder = new ProxyConfigHolder(new ProxyNetworkConfig("example.com", 8080), new ProxyCredentials());
         when(mockResponse.isSuccessful()).thenReturn(false);
-        proxyValidationService = new ProxyValidationServiceImpl() {
+        proxyValidationService = new ProxyValidationServiceImpl(okHttpBeanFactory, "validationUrl") {
             void createResponse(ProxyConfigHolder configHolder) {
                 setResponse(mockResponse);
             }
