@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geeksforless.client.model.ProxyConfigHolder;
 import com.geeksforless.client.model.ProxyCredentials;
 import com.geeksforless.client.model.ProxyNetworkConfig;
-import com.geeksforless.client.service.validation.ProxyValidationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

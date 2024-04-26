@@ -3,7 +3,6 @@ package com.geeksforless.client.service.proxysource;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geeksforless.client.model.ProxyConfigHolder;
-import com.geeksforless.client.service.validation.ProxyValidationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
