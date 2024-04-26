@@ -32,7 +32,7 @@ public class ProxyScheduler {
         LOGGER.info("Starting a scheduled proxy addition to queue");
         try {
             List<ProxyConfigHolder> proxies = proxySourceService.getProxies();
-            proxies.forEach(proxySourceQueueHandler::addProxy);
+            proxies.stream().parallel().forEach(proxySourceQueueHandler::addProxy);
 
             LOGGER.info("Successfully added {} proxies to queue", proxies.size());
         } catch (Exception e) {

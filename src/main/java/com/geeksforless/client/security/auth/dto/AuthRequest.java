@@ -10,6 +10,9 @@ public class AuthRequest {
   @NotBlank(message = "Enter password")
   private String password;
 
+  public AuthRequest() {
+  }
+
   public AuthRequest(String login, String password) {
     this.login = login;
     this.password = password;

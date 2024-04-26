@@ -7,6 +7,8 @@ import com.geeksforless.client.model.ProxyConfigHolder;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.model.dto.ScenarioDtoInternal;
+import com.geeksforless.client.model.dto.factory.ScenarioDtoFactory;
+import com.geeksforless.client.model.factory.ProxyConfigHolderFactory;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,13 +26,19 @@ public class WorkerController {
     private final ScenarioSourceQueueHandler scenarioSourceQueueHandler;
     private final ProxySourceQueueHandler proxySourceQueueHandler;
     private final ScenarioMapper scenarioMapper;
+    private final ScenarioDtoFactory scenarioDtoFactory;
+    private final ProxyConfigHolderFactory proxyConfigHolderFactory;
 
     public WorkerController(ScenarioSourceQueueHandler scenarioSourceQueueHandler,
                             ProxySourceQueueHandler proxySourceQueueHandler,
-                            ScenarioMapper scenarioMapper) {
+                            ScenarioMapper scenarioMapper,
+                            ScenarioDtoFactory scenarioDtoFactory,
+                            ProxyConfigHolderFactory proxyConfigHolderFactory) {
         this.scenarioSourceQueueHandler = scenarioSourceQueueHandler;
         this.proxySourceQueueHandler = proxySourceQueueHandler;
         this.scenarioMapper = scenarioMapper;
+        this.scenarioDtoFactory = scenarioDtoFactory;
+        this.proxyConfigHolderFactory = proxyConfigHolderFactory;
     }
 
     @PostMapping("/result")
@@ -45,7 +53,7 @@ public class WorkerController {
     public ResponseEntity<ProxyConfigHolder> getProxy() {
         logger.info("client requesting proxy");
         return ResponseEntity.ok(Optional.ofNullable(proxySourceQueueHandler.getProxy())
-                .orElse(new ProxyConfigHolder())
+                .orElse(proxyConfigHolderFactory.createEmpty())
         );
     }
 
@@ -54,7 +62,7 @@ public class WorkerController {
         logger.info("client requesting scenario");
         return ResponseEntity.ok(scenarioSourceQueueHandler.takeScenario()
                 .map(scenarioMapper::toDtoExternal)
-                .orElse(new ScenarioDtoExternal())
+                .orElse(scenarioDtoFactory.createExternalEmpty())
         );
     }
 
@@ -64,7 +72,7 @@ public class WorkerController {
 
         List<Scenario> scenarios = scenarioSourceQueueHandler.takeScenarios();
         if (scenarios.isEmpty())
-            return ResponseEntity.ok(List.of(new ScenarioDtoInternal()));
+            return ResponseEntity.ok(List.of(scenarioDtoFactory.createInternalEmpty()));
 
         return ResponseEntity.ok(scenarios.stream().map(scenarioMapper::toDtoInternal).toList());
     }

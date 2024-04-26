@@ -38,8 +38,6 @@ public class ProxySourceServiceUrl implements ProxySourceService {
     }
 
     @Override
-    @Async
-    @Scheduled(fixedRateString = "${client.proxy.url.fixedRate}")
     public List<ProxyConfigHolder> getProxies()  {
         List<ProxyConfigHolder> proxyConfigHolderList = new ArrayList<>();
 
@@ -48,6 +46,7 @@ public class ProxySourceServiceUrl implements ProxySourceService {
             Response response = okHttpClient.newCall(request).execute();
             if (response.body() != null && response.isSuccessful()) {
                 String responseBody = response.body().string();
+                response.body().close();
                 List<ProxyConfigHolder> proxiesFromResponse = parseProxyConfig(responseBody);
                 proxyConfigHolderList.addAll(proxiesFromResponse);
             }
