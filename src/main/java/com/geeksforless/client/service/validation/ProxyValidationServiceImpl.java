@@ -1,9 +1,7 @@
 package com.geeksforless.client.service.validation;
 
 import com.geeksforless.client.model.ProxyConfigHolder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import com.squareup.okhttp.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,8 +50,22 @@ public class ProxyValidationServiceImpl implements ProxyValidationService {
     void createResponse(ProxyConfigHolder configHolder) throws IOException {
         Proxy proxy = createProxy(configHolder.getProxyNetworkConfig().getHostname(),
                 configHolder.getProxyNetworkConfig().getPort());
+        Authenticator proxyAuthenticator = new Authenticator() {
+            @Override
+            public Request authenticate(Proxy proxy, Response response) throws IOException {
+                String credentials = Credentials.basic(configHolder.getProxyCredentials().getUsername(),configHolder.getProxyCredentials().getPassword());
+                return response.request().newBuilder().header("Authorization",credentials).build();
+            }
+
+            @Override
+            public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
+                String credentials = Credentials.basic(configHolder.getProxyCredentials().getUsername(),configHolder.getProxyCredentials().getPassword());
+                return response.request().newBuilder().header("Proxy-Authorization",credentials).build();
+            }
+        };
         OkHttpClient client = new OkHttpClient();
         client.setProxy(proxy);
+        client.setAuthenticator(proxyAuthenticator);
         client.setConnectTimeout(1, TimeUnit.SECONDS);
         client.setReadTimeout(1, TimeUnit.SECONDS);
         response = client.newCall(createRequest()).execute();
