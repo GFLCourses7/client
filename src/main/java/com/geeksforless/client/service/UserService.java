@@ -13,5 +13,5 @@ public interface UserService {
 
         void addScenario(Scenario scenario, String userName);
 
-        List<Scenario> getResult(String userName);
+        List<Scenario> getResults(String userName);
 }

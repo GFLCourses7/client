@@ -76,20 +76,20 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
 
     @Override
     @Transactional
-    public ScenarioDtoExternal updateScenario(ScenarioDtoInternal scenarioInfo) {
-        Optional<Scenario> optionalScenario = scenarioRepository.findById(scenarioInfo.getId());
+    public ScenarioDtoExternal updateScenario(ScenarioDtoInternal scenarioDtoInternal) {
+        Optional<Scenario> optionalScenario = scenarioRepository.findById(scenarioDtoInternal.getId());
 
         if (optionalScenario.isPresent()) {
             Scenario scenario = optionalScenario.get();
-            scenario.setResult(scenarioInfo.getResult());
+            scenario.setResult(scenarioDtoInternal.getResult());
             scenario.setDone(true);
 
             logger.info("Result of scenario {} was saved", scenario.getName());
             Scenario updated = scenarioRepository.save(scenario);
             return scenarioMapper.toDtoExternal(updated);
         }
-        logger.error("Scenario with id {} not found.", scenarioInfo.getId());
-        throw new ScenarioNotFoundException("Scenario with id " + scenarioInfo.getId() + " not found.");
+        logger.error("Scenario with id {} not found.", scenarioDtoInternal.getId());
+        throw new ScenarioNotFoundException("Scenario with id " + scenarioDtoInternal.getId() + " not found.");
     }
 
     public LinkedBlockingQueue<Scenario> getQueue() {
@@ -114,7 +114,7 @@ public class ScenarioSourceQueueHandlerImpl implements ScenarioSourceQueueHandle
     }
 
     @Override
-    public List<Scenario> getScenarioByUser(User user) {
+    public List<Scenario> getScenariosByUser(User user) {
         return scenarioRepository.findByUser(user);
     }
 }

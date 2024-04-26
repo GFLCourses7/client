@@ -1,10 +1,8 @@
 package com.geeksforless.client.service;
 
 import com.geeksforless.client.handler.ScenarioSourceQueueHandler;
-import com.geeksforless.client.mapper.ScenarioMapper;
 import com.geeksforless.client.model.Scenario;
 import com.geeksforless.client.model.User;
-import com.geeksforless.client.model.dto.ScenarioDtoExternal;
 import com.geeksforless.client.model.enums.Role;
 import com.geeksforless.client.repository.UserRepository;
 import com.geeksforless.client.service.impl.UserServiceImpl;
@@ -31,9 +29,6 @@ public class UserServiceTest {
 
     @Mock
     private ScenarioSourceQueueHandler scenarioQueueHandler;
-
-    @Mock
-    private ScenarioMapper scenarioMapper;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -91,24 +86,22 @@ public class UserServiceTest {
     }
 
     @Test
-    void getResult_UserExists_ReturnsListOfScenarioInfo() {
+    void getResults_UserExists_ReturnsListOfScenarios() {
         User user = new User("testUser", "password", Role.USER);
         when(userRepository.findByUserName("testUser")).thenReturn(Optional.of(user));
-        List<ScenarioDtoExternal> scenarioDtos = new ArrayList<>();
-        when(scenarioQueueHandler.getScenarioByUser(user)).thenReturn(new ArrayList<>());
+        List<Scenario> scenarios = new ArrayList<>();
+        when(scenarioQueueHandler.getScenariosByUser(user)).thenReturn(new ArrayList<>());
 
-        List<ScenarioDtoExternal> result = userService.getResult("testUser")
-                .stream().map(scenarioMapper::toDtoExternal)
-                .toList();
+        List<Scenario> result = userService.getResults("testUser");
 
-        assertEquals(scenarioDtos, result);
+        assertEquals(scenarios, result);
     }
 
     @Test
-    public void testGetResult_UserNotFound() {
+    public void testGetResults_UserNotFound() {
         String userName = "nonExistingUser";
         when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
 
-        assertThrows(UsernameNotFoundException.class, () -> userService.getResult(userName));
+        assertThrows(UsernameNotFoundException.class, () -> userService.getResults(userName));
     }
 }

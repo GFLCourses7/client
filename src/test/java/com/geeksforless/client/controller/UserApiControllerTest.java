@@ -29,6 +29,7 @@ public class UserApiControllerTest {
 
     @Mock
     private UserService userService;
+
     @Mock
     private ScenarioMapper scenarioMapper;
 
@@ -65,7 +66,7 @@ public class UserApiControllerTest {
     }
 
     @Test
-    void getResult_AuthenticatedUser_ReturnsListOfScenarioDTO() {
+    void getResults_AuthenticatedUser_ReturnsListOfScenarioDTO() {
         ScenarioDtoExternal dto = new ScenarioDtoExternal();
         dto.setName("name");
         List<ScenarioDtoExternal> scenarioDtoList = new ArrayList<>(List.of(dto));
@@ -74,7 +75,7 @@ public class UserApiControllerTest {
         scenario.setName(dto.getName());
         List<Scenario> scenarios = List.of(scenario);
 
-        when(userService.getResult("testUser")).thenReturn(scenarios);
+        when(userService.getResults("testUser")).thenReturn(scenarios);
         UserDetails userDetails = User.withUsername("testUser")
                 .password("testPassword")
                 .roles("USER")
@@ -87,7 +88,7 @@ public class UserApiControllerTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        ResponseEntity<List<ScenarioDtoExternal>> responseEntity = userApiController.getResult();
+        ResponseEntity<List<ScenarioDtoExternal>> responseEntity = userApiController.getResults();
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(scenarioDtoList, responseEntity.getBody());
@@ -97,9 +98,9 @@ public class UserApiControllerTest {
     void getResult_UnauthenticatedUser_ReturnsNotFound() {
         SecurityContextHolder.clearContext();
 
-        ResponseEntity<List<ScenarioDtoExternal>> responseEntity = userApiController.getResult();
+        ResponseEntity<List<ScenarioDtoExternal>> responseEntity = userApiController.getResults();
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        verify(userService, never()).getResult(any());
+        verify(userService, never()).getResults(any());
     }
 }
