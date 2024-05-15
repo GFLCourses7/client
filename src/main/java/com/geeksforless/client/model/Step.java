@@ -13,7 +13,7 @@ public class Step {
     private Long id;
     @Column(name = "action")
     private String action;
-    @Column(name = "value_")
+    @Column(name = "value_", length = 16384)
     private String value;
 
     @ManyToOne
